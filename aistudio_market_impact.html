@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>AI Studio · Feature Priority Roadmap</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #131313; color: #d8d8d8; font-size: 13px; line-height: 1.6; }
+a { color: inherit; text-decoration: none; }
+
+/* Layout */
+.page { max-width: 1100px; margin: 0 auto; padding: 32px 40px 80px; }
+
+/* Header */
+.doc-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; margin-bottom: 32px; padding-bottom: 24px; border-bottom: 1px solid #2a2a2a; flex-wrap: wrap; }
+.doc-brand { display: flex; align-items: center; gap: 10px; }
+.logo-icon { width: 30px; height: 30px; border-radius: 8px; background: linear-gradient(135deg, #a855f7, #3b82f6); display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+.doc-title { font-size: 18px; font-weight: 700; color: #fff; }
+.doc-subtitle { font-size: 12px; color: #555; margin-top: 1px; }
+.doc-stats { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.stat-chip { background: #1e1e1e; border: 1px solid #2e2e2e; border-radius: 6px; padding: 5px 12px; font-size: 11px; }
+.stat-chip b { color: #e0e0e0; }
+.stat-chip span { color: #555; }
+
+/* Framework */
+.framework { background: #1a1a2a; border: 1px solid #2a2a4a; border-radius: 10px; padding: 16px 20px; margin-bottom: 32px; }
+.framework-title { font-size: 11px; font-weight: 700; color: #555; text-transform: uppercase; letter-spacing: .09em; margin-bottom: 10px; }
+.framework-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; }
+.fw-item { background: #12121e; border-radius: 7px; padding: 10px 13px; }
+.fw-item-label { font-size: 10px; font-weight: 700; color: #6699ff; text-transform: uppercase; letter-spacing: .07em; margin-bottom: 3px; }
+.fw-item-desc { font-size: 11px; color: #666; }
+
+/* Tier section */
+.tier-section { margin-bottom: 36px; }
+.tier-header { display: flex; align-items: center; gap: 10px; margin-bottom: 6px; }
+.tier-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.tier-label { font-size: 14px; font-weight: 700; color: #eee; }
+.tier-count { font-size: 11px; font-weight: 700; background: #252525; color: #666; padding: 2px 8px; border-radius: 10px; border: 1px solid #333; }
+.tier-desc { font-size: 12px; color: #555; margin-bottom: 14px; margin-left: 20px; }
+.tier-badge { font-size: 10px; font-weight: 700; padding: 3px 9px; border-radius: 100px; margin-left: 6px; }
+
+/* Table */
+.scenario-table { width: 100%; border-collapse: collapse; }
+.scenario-table thead th { font-size: 10px; font-weight: 700; color: #444; text-transform: uppercase; letter-spacing: .07em; padding: 8px 12px; text-align: left; border-bottom: 1px solid #222; }
+.scenario-table tbody tr { border-bottom: 1px solid #1e1e1e; transition: background .12s; }
+.scenario-table tbody tr:hover { background: #1c1c1c; }
+.scenario-table td { padding: 11px 12px; vertical-align: top; }
+.rank { font-size: 11px; font-weight: 700; color: #444; min-width: 28px; }
+.sc-name { display: flex; align-items: flex-start; gap: 8px; min-width: 200px; }
+.sc-emoji { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+.sc-name-text { font-size: 12px; font-weight: 600; color: #e0e0e0; margin-bottom: 2px; }
+.sc-card { font-size: 10px; color: #555; }
+.sc-rationale { font-size: 11px; color: #777; line-height: 1.6; max-width: 320px; }
+.tags { display: flex; flex-wrap: wrap; gap: 3px; }
+.tag { font-size: 9px; font-weight: 600; padding: 2px 6px; border-radius: 100px; display: inline-flex; align-items: center; white-space: nowrap; }
+.tag-existing   { background:#1c2e1c; color:#5ecf80; }
+.tag-sw         { background:#0e2030; color:#4db8f0; }
+.tag-style3d    { background:#2a1e0e; color:#f0a855; }
+.tag-developing { background:#2a1e08; color:#f0a030; }
+.tag-soho       { background:#2a1a2e; color:#d08af5; }
+.tag-nano-yes   { background:#003030; color:#00e5c8; border:1px solid #005a50; }
+.tag-nano-yb    { background:#181a00; color:#d9f99d; border:1px solid #303800; }
+.tag-nano-no    { background:#1a0618; color:#e879f9; border:1px solid #3a0a38; }
+.tag-huiwacn-good  { background:#0d2a14; color:#4ade80; border:1px solid #14532d; }
+.tag-huiwacn-soso  { background:#2a2200; color:#fbbf24; border:1px solid #4a3a00; }
+.tag-huiwacn-bad   { background:#2a0a0a; color:#f87171; border:1px solid #5a1a1a; }
+.tag-huiwakr-good  { background:#082218; color:#6ee7b7; border:1px solid #103c28; }
+.tag-huiwakr-soso  { background:#1c1600; color:#fde68a; border:1px solid #342c00; }
+.tag-huiwakr-bad   { background:#1e0810; color:#fca5a5; border:1px solid #3c1020; }
+.tag-lingyang   { background:#001828; color:#38bdf8; border:1px solid #0369a1; }
+.view-btn { display: inline-flex; align-items: center; gap: 4px; font-size: 10px; font-weight: 700; color: #2dd4bf; background: #0a2020; border: 1px solid #1a4a44; padding: 4px 10px; border-radius: 6px; cursor: pointer; white-space: nowrap; transition: all .15s; }
+.view-btn:hover { background: #2dd4bf; color: #000; border-color: #2dd4bf; }
+
+/* Tier colors */
+.t1 .tier-dot { background: #ef4444; }
+.t1 .tier-label { color: #fca5a5; }
+.t2 .tier-dot { background: #f97316; }
+.t2 .tier-label { color: #fdba74; }
+.t3 .tier-dot { background: #eab308; }
+.t3 .tier-label { color: #fde047; }
+.t4 .tier-dot { background: #6366f1; }
+.t4 .tier-label { color: #a5b4fc; }
+
+/* Legend row */
+.legend-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 28px; padding: 12px 16px; background: #1a1a1a; border-radius: 8px; border: 1px solid #222; }
+.legend-item { display: flex; align-items: center; gap: 4px; font-size: 10px; color: #555; }
+.legend-dot { width: 7px; height: 7px; border-radius: 2px; }
+.legend-sep { color: #2a2a2a; margin: 0 4px; }
+
+/* Inline detail panel */
+.inline-detail { display: none; background: #1a1a1a; border: 1px solid #2a2a2a; border-top: none; border-radius: 0 0 8px 8px; padding: 14px 16px; }
+.inline-detail.open { display: block; }
+.inline-scenario { display: flex; align-items: flex-start; gap: 10px; padding: 8px 0; border-bottom: 1px solid #1e1e1e; }
+.inline-scenario:last-child { border-bottom: none; }
+.inline-sc-name { font-size: 12px; font-weight: 600; color: #ccc; min-width: 180px; }
+.inline-sc-desc { font-size: 11px; color: #555; flex: 1; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Header -->
+  <div class="doc-header">
+    <div class="doc-brand">
+      <div class="logo-icon">✦</div>
+      <div>
+        <div class="doc-title">AI Studio · Feature Priority Roadmap</div>
+        <div class="doc-subtitle">Fashion industry impact analysis · CLO3D AI Studio</div>
+      </div>
+    </div>
+    <div class="doc-stats" id="stats-bar"></div>
+  </div>
+
+  <!-- Priority Framework -->
+  <div class="framework">
+    <div class="framework-title">Priority Framework</div>
+    <div class="framework-grid">
+      <div class="fw-item">
+        <div class="fw-item-label">📈 Market Impact</div>
+        <div class="fw-item-desc">Scale of direct revenue generation or production cost reduction for fashion brands</div>
+      </div>
+      <div class="fw-item">
+        <div class="fw-item-label">⚔️ Competitive Gap</div>
+        <div class="fw-item-desc">Whether competitors (Style3D · SOHO) already offer this — if not, it's a differentiation opportunity</div>
+      </div>
+      <div class="fw-item">
+        <div class="fw-item-label">🧪 Test Validation</div>
+        <div class="fw-item-desc">Availability of internal test results from Nano · HuiwaCN · HuiwaKR</div>
+      </div>
+      <div class="fw-item">
+        <div class="fw-item-label">🏭 Workflow Fit</div>
+        <div class="fw-item-desc">Fit within the core fashion brand workflow (planning → development → shoot → marketing)</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Legend -->
+  <div class="legend-row">
+    <div class="legend-item"><div class="legend-dot" style="background:#5ecf80"></div>Existing in Web</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#4db8f0"></div>Existing in SW</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#f0a855"></div>Style3D</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#f0a030"></div>Developing</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#d08af5"></div>SOHO</div>
+    <span class="legend-sep">|</span>
+    <div class="legend-item"><div class="legend-dot" style="background:#00e5c8;border:1px solid #005a50"></div>😊 Nano-Yes</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#d9f99d;border:1px solid #303800"></div>😐 Nano-Yes,but</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#e879f9;border:1px solid #3a0a38"></div>😢 Nano-No</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#4ade80"></div>😊 HuiwaCN-good</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#fbbf24"></div>😐 HuiwaCN-soso</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#f87171"></div>😢 HuiwaCN-bad</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#6ee7b7;border:1px solid #103c28"></div>😊 HuiwaKR-good</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#fde68a;border:1px solid #342c00"></div>😐 HuiwaKR-soso</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#fca5a5;border:1px solid #3c1020"></div>😢 HuiwaKR-bad</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#38bdf8;border:1px solid #0369a1"></div>Lingyang</div>
+  </div>
+
+  <div id="priority-content"></div>
+
+</div>
+
+<script>
+const TD={
+  existing:{cls:'tag-existing',label:'Existing in Web'},sw:{cls:'tag-sw',label:'Existing in SW'},
+  style3d:{cls:'tag-style3d',label:'Style3D'},developing:{cls:'tag-developing',label:'Developing'},
+  soho:{cls:'tag-soho',label:'SOHO'},
+  'nano-yes':{cls:'tag-nano-yes',label:'😊 Nano-Yes'},'nano-yb':{cls:'tag-nano-yb',label:'😐 Nano-Yes,but'},'nano-no':{cls:'tag-nano-no',label:'😢 Nano-No'},
+  'huiwacn-good':{cls:'tag-huiwacn-good',label:'😊 HuiwaCN-good'},'huiwacn-soso':{cls:'tag-huiwacn-soso',label:'😐 HuiwaCN-soso'},'huiwacn-bad':{cls:'tag-huiwacn-bad',label:'😢 HuiwaCN-bad'},
+  'huiwakr-good':{cls:'tag-huiwakr-good',label:'😊 HuiwaKR-good'},'huiwakr-soso':{cls:'tag-huiwakr-soso',label:'😐 HuiwaKR-soso'},'huiwakr-bad':{cls:'tag-huiwakr-bad',label:'😢 HuiwaKR-bad'},
+  lingyang:{cls:'tag-lingyang',label:'Lingyang'}
+};
+function mt(arr){return arr.map(t=>{const d=TD[t];return d?`<span class="tag ${d.cls}">${d.label}</span>`:''}).join('');}
+
+const TIERS = [
+  {
+    id:'t1', label:'Tier 1 · Launch Critical', dot:'#ef4444',
+    badge:'🔴 Phase 1',
+    desc:'Core to the fashion e-commerce workflow — reduces shoot costs, produces catalog assets, and visualizes prints and materials. Competitors (Style3D · SOHO) already offer these, making early launch essential.',
+    items:[
+      {rank:1, emoji:'🖼️', name:'Change Model & Background', card:'Model & Scene', cardId:'model-scene',
+       rationale:'Photo shoots are the single largest cost in fashion e-commerce. AI model and background swapping enables 10× content production from one garment across models, seasons, and markets.',
+       tags:['style3d','soho','nano-yb','huiwacn-soso']},
+      {rank:2, emoji:'🗂️', name:'Garment to Flat Lay', card:'Product Photography', cardId:'product-photography',
+       rationale:'Every e-commerce platform requires flat lay images for all SKUs. Replacing manual photo work with AI automation cuts per-SKU cost by up to 90%.',
+       tags:['style3d','nano-yes','huiwacn-good','huiwacn-soso','huiwakr-soso']},
+      {rank:3, emoji:'📸', name:'Generate Views', card:'Model & Scene', cardId:'model-scene',
+       rationale:'Product detail pages (PDP) require front, side, and back views as standard. Automatically generates multiple angles from a single source image.',
+       tags:['style3d','soho']},
+      {rank:4, emoji:'🔍', name:'Garment Detail Shots', card:'Product Photography', cardId:'product-photography',
+       rationale:'Premium brand PDPs require close-up shots of fabric, stitching, and trim. HuiwaCN test results are positive.',
+       tags:['style3d','soho','huiwacn-good','huiwakr-soso']},
+      {rank:5, emoji:'🔁', name:'Apply Print to Garment', card:'Apply to Garment', cardId:'apply-to-garment',
+       rationale:'Core feature for print-focused brands. Simulating prints on garments before sign-off reduces sampling iterations.',
+       tags:['style3d','soho']},
+      {rank:6, emoji:'📄', name:'Catalog Generator', card:'Content Generator', cardId:'content-generator',
+       rationale:'Batch production of PDP assets — the biggest time sink for marketing teams. HuiwaCN test results confirm the technical direction.',
+       tags:['soho','huiwacn-soso']},
+      {rank:7, emoji:'👗', name:'Outfit Try-On', card:'Virtual Try-On', cardId:'virtual-try-on',
+       rationale:'Auto-generates full-look images combining tops, bottoms, and accessories. Demand for styling content is surging; HuiwaCN testing complete.',
+       tags:['style3d','huiwacn-soso']},
+      {rank:8, emoji:'🌈', name:'Colorway Generator', card:'Colorway Generator', cardId:'colorway-generator',
+       rationale:'Seasonal colorway development is central to the design calendar. Generating multiple colorways from one design dramatically cuts sample costs.',
+       tags:['style3d','soho','nano-yes','huiwakr-soso']},
+      {rank:9, emoji:'📦', name:'Flat to 3D', card:'3D Visualization', cardId:'3d-visualization',
+       rationale:'3D simulation before physical sampling reduces iteration rounds. A natural extension combining CLO\'s 3D strength with AI.',
+       tags:['style3d','huiwacn-good']},
+    ]
+  },
+  {
+    id:'t2', label:'Tier 2 · High Priority', dot:'#f97316',
+    badge:'🟠 Phase 2',
+    desc:'Significant productivity gains in everyday design and shoot workflows. Largely competitor-aligned features, but with a more specialized user base than Tier 1.',
+    items:[
+      {rank:10, emoji:'🔀', name:'Design Variations', card:'AI Design Generator', cardId:'ai-design-generator',
+       rationale:'Core to the designer ideation phase — blends multiple reference images to generate new style directions. Style3D already offers this.',
+       tags:['style3d','soho']},
+      {rank:11, emoji:'✍️', name:'Garment Refine', card:'AI Design Generator', cardId:'ai-design-generator',
+       rationale:'Partial inpainting for collar, sleeves, closures, and more. Applies design feedback without regenerating the entire garment.',
+       tags:['style3d','soho']},
+      {rank:12, emoji:'🔂', name:'Apply Pattern to Garment', card:'Apply to Garment', cardId:'apply-to-garment',
+       rationale:'Applies repeat patterns (checks, stripes, dobbies) to garments while maintaining scale accuracy. Essential for fabric design review.',
+       tags:['style3d','soho']},
+      {rank:13, emoji:'🤸', name:'Change Pose', card:'Model & Scene', cardId:'model-scene',
+       rationale:'Generates varied campaign images of the same garment in different poses. Directly addresses growing demand for diverse social media content.',
+       tags:['style3d','soho','nano-yb']},
+      {rank:14, emoji:'👡', name:'Virtual Accessories Try-On', card:'Virtual Try-On', cardId:'virtual-try-on',
+       rationale:'Creates complete look images with shoes, bags, and hats. HuiwaCN test results are positive; expands into the accessories category.',
+       tags:['style3d','huiwacn-good']},
+      {rank:15, emoji:'🎬', name:'Image to Video', card:'Image to Video', cardId:'image-to-video',
+       rationale:'Explosive growth in demand for Reels and Shorts. Converting images to video cuts video marketing costs by up to 90%.',
+       tags:['soho','huiwakr-soso']},
+      {rank:16, emoji:'🪡', name:'Fabric Try-On', card:'Fabric & Texture', cardId:'fabric-texture',
+       rationale:'Simulates fabric swaps before committing to a material. Enables fabric review without producing physical swatches.',
+       tags:['style3d','nano-yb']},
+      {rank:17, emoji:'🧑‍🤝‍🧑', name:'Model Variations', card:'Model & Scene', cardId:'model-scene',
+       rationale:'Meets global brands\' diversity requirements. Batch-generates the same garment on models of varied body types and ethnicities.',
+       tags:['style3d','soho']},
+    ]
+  },
+  {
+    id:'t3', label:'Tier 3 · Medium Priority', dot:'#eab308',
+    badge:'🟡 Phase 3',
+    desc:'High value for specific roles — graphic designers, technical designers, and post-production teams. Specialized over general-purpose.',
+    items:[
+      {rank:18, emoji:'🪡', name:'Graphic Generator', card:'Graphic & Pattern', cardId:'graphic-pattern',
+       rationale:'Already available in SW but a web version is needed. Core tool for print designers; creates synergy with adjacent features.',
+       tags:['sw','style3d']},
+      {rank:19, emoji:'📐', name:'Extract Technical Drawing', card:'Line Art & Technical', cardId:'line-art-technical',
+       rationale:'Automates tech packs, improving efficiency for technical designers. Style3D already offers this.',
+       tags:['style3d','soho']},
+      {rank:20, emoji:'🎛️', name:'Graphic Mixer', card:'Graphic Tools', cardId:'graphic-tools',
+       rationale:'Mix multiple patterns to develop original prints. High value for brands with proprietary print collections.',
+       tags:['style3d','soho']},
+      {rank:21, emoji:'✂️', name:'Smart Cutout & Selection', card:'Image Editing', cardId:'image-editing',
+       rationale:'AI masking improves post-production efficiency. HuiwaKR soso — quality can be further improved.',
+       tags:['huiwakr-soso']},
+      {rank:22, emoji:'📱', name:'Fashion Inspiration Content', card:'Content Generator', cardId:'content-generator',
+       rationale:'Auto-generates fashion inspiration content for Instagram and TikTok. HuiwaCN soso — quality direction needs revision.',
+       tags:['soho','huiwacn-soso']},
+      {rank:23, emoji:'🪢', name:'AI Trim Generator', card:'AI Trim Generator', cardId:'ai-trim-generator',
+       rationale:'Already in development. Generates embroidery, lace, and buttons — high value for trim-specialist brands.',
+       tags:['developing','style3d','soho','nano-yes']},
+      {rank:24, emoji:'🔎', name:'Graphic Extractor', card:'Graphic Tools', cardId:'graphic-tools',
+       rationale:'Extracts graphic patterns from reference images. Supports trend research and redesign workflows.',
+       tags:['style3d','soho']},
+      {rank:25, emoji:'🔄', name:'Style Variants', card:'Style Variants', cardId:'style-variants',
+       rationale:'Batch-generates multiple style variants of the same garment. HuiwaCN soso/bad — quality stabilization required first.',
+       tags:['huiwacn-soso','huiwacn-bad']},
+      {rank:26, emoji:'✏️', name:'Realistic to Line Art', card:'Line Art & Technical', cardId:'line-art-technical',
+       rationale:'Converts photorealistic garments to clean line art. Supports sketch-based workflows; validated with Nano-Yes.',
+       tags:['nano-yes']},
+    ]
+  },
+  {
+    id:'t4', label:'Tier 4 · Future Planning', dot:'#6366f1',
+    badge:'🔵 Phase 4',
+    desc:'Innovative but with lower immediate demand or requiring further technical maturity. Includes Lingyang-dependent features that need a separate partnership plan.',
+    items:[
+      {rank:27, emoji:'🖌️', name:'Image Retouch', card:'Image Editing', cardId:'image-editing',
+       rationale:'Currently Nano-No — output quality falls below production standards. Revisit after model or foundational tech improvements.',
+       tags:['nano-no','huiwakr-soso']},
+      {rank:28, emoji:'🧑', name:'Face Swap', card:'Image Editing', cardId:'image-editing',
+       rationale:'Demand exists, but portrait rights and AI ethics policies must be established internally first. Nano results are mixed.',
+       tags:['nano-yb','nano-no']},
+      {rank:29, emoji:'📋', name:'Garment Pattern Generator', card:'Graphic & Pattern', cardId:'graphic-pattern',
+       rationale:'AI-generated 2D sewing patterns. A niche function for pattern makers with a limited addressable market.',
+       tags:[]},
+      {rank:30, emoji:'🏬', name:'VMD & Store Display', card:'VMD & Store Display', cardId:'vmd-store',
+       rationale:'Window display and in-store layout simulation. Targets offline retail — needs a separate roadmap from the e-commerce-first strategy.',
+       tags:['soho']},
+      {rank:31, emoji:'🌐', name:'Trend Forecast', card:'Market Intelligence', cardId:'market-intelligence',
+       rationale:'Requires Lingyang partnership. Real-time runway and street trend analysis — data pipeline must be built first.',
+       tags:['soho','lingyang']},
+      {rank:32, emoji:'👥', name:'Consumer Insights', card:'Market Intelligence', cardId:'market-intelligence',
+       rationale:'Lingyang-based consumer profiling. Requires a separate commercial structure — B2B SaaS or partner API model.',
+       tags:['soho','lingyang']},
+      {rank:33, emoji:'📊', name:'Category & Market Analysis', card:'Market Intelligence', cardId:'market-intelligence',
+       rationale:'Price band and market opportunity mapping. Heavily dependent on Lingyang data.',
+       tags:['soho','lingyang']},
+      {rank:34, emoji:'📣', name:'Social Media Insights', card:'Market Intelligence', cardId:'market-intelligence',
+       rationale:'VOC and consumer sentiment analysis. Requires SNS API integrations and separate data partnership agreements.',
+       tags:['soho','lingyang']},
+      {rank:35, emoji:'🎨', name:'Color Palette Generator', card:'Creative Trend', cardId:'creative-trend',
+       rationale:'Seasonal palettes driven by trend data — deprioritized as it depends on Market Intelligence integration.',
+       tags:['lingyang']},
+      {rank:36, emoji:'💡', name:'Trend to Design', card:'Creative Trend', cardId:'creative-trend',
+       rationale:'Auto-generates garment concept images from trend data. Only meaningful after the Lingyang trend data pipeline is complete.',
+       tags:['soho','lingyang']},
+    ]
+  }
+];
+
+function renderStats(){
+  const total=TIERS.reduce((s,t)=>s+t.items.length,0);
+  const byCnt=TIERS.map((t,i)=>`<span class="stat-chip"><b style="color:${t.dot}">${t.items.length}</b> <span>Tier ${i+1}</span></span>`).join('');
+  document.getElementById('stats-bar').innerHTML=
+    `<span class="stat-chip"><b style="color:#e0e0e0">${total}</b> <span>Scenarios to build</span></span>`+byCnt;
+}
+
+function openCard(cardId){
+  window.open('aistudio_catalog.html?openCard='+cardId,'_blank');
+}
+
+function renderPriority(){
+  let html='';
+  TIERS.forEach(tier=>{
+    html+=`<div class="tier-section ${tier.id}">
+      <div class="tier-header">
+        <div class="tier-dot" style="background:${tier.dot}"></div>
+        <div class="tier-label">${tier.label}</div>
+        <div class="tier-count">${tier.items.length} scenarios</div>
+        <span class="tier-badge" style="background:${tier.dot}22;color:${tier.dot};border:1px solid ${tier.dot}44">${tier.badge}</span>
+      </div>
+      <div class="tier-desc">${tier.desc}</div>
+      <table class="scenario-table">
+        <thead><tr>
+          <th>#</th><th>Scenario</th><th>Impact Rationale</th><th>Tags</th><th></th>
+        </tr></thead>
+        <tbody>`;
+    tier.items.forEach(item=>{
+      html+=`<tr>
+        <td class="rank">${item.rank}</td>
+        <td class="sc-name">
+          <div class="sc-emoji">${item.emoji}</div>
+          <div>
+            <div class="sc-name-text">${item.name}</div>
+            <div class="sc-card">↳ ${item.card}</div>
+          </div>
+        </td>
+        <td class="sc-rationale">${item.rationale}</td>
+        <td><div class="tags">${mt(item.tags)}</div></td>
+        <td><button class="view-btn" onclick="openCard('${item.cardId}')">View →</button></td>
+      </tr>`;
+    });
+    html+=`</tbody></table></div>`;
+  });
+  document.getElementById('priority-content').innerHTML=html;
+}
+
+renderStats();
+renderPriority();
+</script>
+</body>
+</html>

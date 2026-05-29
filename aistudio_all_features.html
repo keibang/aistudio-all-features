@@ -1,0 +1,1015 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #1a1a1a; color: #e8e8e8; font-size: 14px; }
+.layout { display: flex; flex-direction: column; min-height: 100vh; }
+.topnav { display: flex; align-items: center; background: #222; border-bottom: 1px solid #333; padding: 0 24px; height: 52px; flex-shrink: 0; gap: 12px; }
+.topnav-logo { display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 700; color: #fff; }
+.logo-icon { width: 28px; height: 28px; border-radius: 8px; background: linear-gradient(135deg, #a855f7, #3b82f6); display: flex; align-items: center; justify-content: center; font-size: 14px; }
+.beta-badge { font-size: 10px; font-weight: 700; color: #888; background: #333; padding: 2px 6px; border-radius: 4px; }
+.topnav-space { flex: 1; }
+.topnav-link { font-size: 13px; color: #aaa; cursor: pointer; padding: 0 10px; }
+.btn-signin { background: #2dd4bf; color: #000; font-size: 13px; font-weight: 600; padding: 7px 18px; border-radius: 8px; cursor: pointer; border: none; }
+.body-row { display: flex; flex: 1; overflow: hidden; }
+.sidebar { width: 210px; background: #222; border-right: 1px solid #333; padding: 16px 0; flex-shrink: 0; overflow-y: auto; }
+.nav-parent { display: flex; align-items: center; justify-content: space-between; padding: 9px 18px; font-size: 13px; font-weight: 600; color: #e0e0e0; cursor: pointer; border-left: 3px solid transparent; }
+.nav-parent:hover { background: #2a2a2a; }
+.nav-parent.active { background: #2a2a2a; border-left-color: #2dd4bf; color: #fff; }
+.nav-parent-icon { font-size: 15px; margin-right: 8px; }
+.nav-arrow { font-size: 10px; color: #666; }
+.nav-children { padding: 2px 0 6px 0; }
+.nav-child { padding: 7px 18px 7px 44px; font-size: 12px; color: #888; cursor: pointer; border-left: 3px solid transparent; }
+.nav-child:hover { color: #ccc; background: #282828; }
+.nav-child.active { color: #2dd4bf; border-left-color: #2dd4bf; }
+.nav-divider { border: none; border-top: 1px solid #2e2e2e; margin: 10px 0; }
+.tmpl-title { padding: 6px 18px; font-size: 10px; font-weight: 700; color: #555; text-transform: uppercase; letter-spacing: .08em; }
+.tmpl-item { padding: 7px 18px; font-size: 12px; color: #666; cursor: pointer; display: flex; align-items: center; gap: 7px; border-left: 3px solid transparent; }
+.tmpl-item:hover { color: #aaa; background: #252525; }
+.tmpl-item.active { color: #2dd4bf; border-left-color: #2dd4bf; background: #1e2e2a; }
+.tmpl-add { padding: 6px 18px; font-size: 12px; color: #2dd4bf; cursor: pointer; }
+.main { flex: 1; overflow-y: auto; background: #1a1a1a; display: block; }
+.section-wrap { padding: 14px 36px 28px; }
+.section-sub { font-size: 13px; color: #666; margin-bottom: 18px; }
+.divider { border: none; border-top: 1px solid #2a2a2a; }
+.card-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 12px; }
+.card { background: #252525; border: 1px solid #333; border-radius: 12px; overflow: hidden; cursor: pointer; transition: all 0.18s; position: relative; }
+.card:hover { border-color: #2dd4bf; transform: translateY(-2px); box-shadow: 0 10px 28px rgba(0,0,0,0.5); }
+.card-try { position: absolute; top: 8px; right: 8px; font-size: 9px; font-weight: 700; background: #2dd4bf; color: #000; padding: 3px 8px; border-radius: 8px; opacity: 0; transition: opacity 0.15s; }
+.card:hover .card-try { opacity: 1; }
+.card-thumb { width: 100%; height: 90px; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden; }
+.card-thumb-emoji { font-size: 28px; position: relative; z-index: 1; }
+.card-thumb-bg { position: absolute; inset: 0; opacity: 0.18; background-image: repeating-linear-gradient(45deg,#fff 0,#fff 1px,transparent 0,transparent 50%); background-size: 14px 14px; }
+.card-count { position: absolute; bottom: 6px; right: 8px; font-size: 10px; font-weight: 700; color: #555; background: #1e1e1e; padding: 2px 7px; border-radius: 10px; border: 1px solid #333; z-index: 2; }
+.card-body { padding: 11px 13px 12px; }
+.card-title { font-size: 13px; font-weight: 600; color: #e0e0e0; margin-bottom: 3px; }
+.card-desc { font-size: 11px; color: #777; line-height: 1.5; margin-bottom: 8px; }
+.tags { display: flex; flex-wrap: wrap; gap: 4px; }
+.tag { font-size: 10px; font-weight: 600; padding: 2px 7px; border-radius: 100px; display: inline-flex; align-items: center; gap: 3px; }
+.tag-existing   { background:#1c2e1c; color:#5ecf80; }
+.tag-sw         { background:#0e2030; color:#4db8f0; }
+.tag-style3d    { background:#2a1e0e; color:#f0a855; }
+.tag-developing { background:#2a1e08; color:#f0a030; }
+.tag-soho       { background:#2a1a2e; color:#d08af5; }
+.tag-nano-yes   { background:#003030; color:#00e5c8; border:1px solid #005a50; }
+.tag-nano-yb    { background:#181a00; color:#d9f99d; border:1px solid #303800; }
+.tag-nano-no    { background:#1a0618; color:#e879f9; border:1px solid #3a0a38; }
+.tag-huiwacn-good  { background:#0d2a14; color:#4ade80; border:1px solid #14532d; }
+.tag-huiwacn-soso  { background:#2a2200; color:#fbbf24; border:1px solid #4a3a00; }
+.tag-huiwacn-bad   { background:#2a0a0a; color:#f87171; border:1px solid #5a1a1a; }
+.tag-huiwakr-good  { background:#082218; color:#6ee7b7; border:1px solid #103c28; }
+.tag-huiwakr-soso  { background:#1c1600; color:#fde68a; border:1px solid #342c00; }
+.tag-huiwakr-bad   { background:#1e0810; color:#fca5a5; border:1px solid #3c1020; }
+.tag-lingyang   { background:#001828; color:#38bdf8; border:1px solid #0369a1; }
+/* Impact tier tags */
+.tag-i1 { background:#2a0a0a; color:#fca5a5; border:1px solid #ef444440; }
+.tag-i2 { background:#2a1400; color:#fdba74; border:1px solid #f9731640; }
+.tag-i3 { background:#2a2000; color:#fde047; border:1px solid #eab30840; }
+.tag-i4 { background:#16103a; color:#a5b4fc; border:1px solid #6366f140; }
+/* Test quality tier tags */
+.tag-q1 { background:#0a2a14; color:#86efac; border:1px solid #22c55e40; }
+.tag-q2 { background:#2a1e00; color:#fcd34d; border:1px solid #eab30840; }
+.tag-q3 { background:#1e1e1e; color:#9ca3af; border:1px solid #6b728040; }
+.tag-q4 { background:#2a0808; color:#fca5a5; border:1px solid #ef444440; }
+/* Filter bar group label */
+/* .tag-filter-group defined in filter bar section */
+/* Combo filter chips */
+.combo-chip { font-size:12px; padding:3px 9px; border-radius:100px; cursor:pointer; transition:all .15s; opacity:0.55; border:1px solid #383838; background:#252525; display:inline-flex; align-items:center; gap:4px; user-select:none; white-space:nowrap; }
+.combo-chip:hover { opacity:0.85; border-color:#555; background:#2e2e2e; }
+.combo-chip.active { opacity:1; box-shadow:0 0 0 1.5px #aaa; border-color:#666; background:#2e2e2e; }
+.combo-count { font-size:9px; font-weight:700; color:#888; background:#333; padding:1px 5px; border-radius:8px; }
+.accent-indigo .card-thumb { background:linear-gradient(135deg,#1a1530,#1e1828); }
+.accent-purple .card-thumb { background:linear-gradient(135deg,#1e1535,#1c1a2e); }
+.accent-teal   .card-thumb { background:linear-gradient(135deg,#0e2520,#162825); }
+.accent-rose   .card-thumb { background:linear-gradient(135deg,#2a1018,#221420); }
+.accent-amber  .card-thumb { background:linear-gradient(135deg,#281800,#221a0a); }
+.accent-blue   .card-thumb { background:linear-gradient(135deg,#0a1a2e,#101c28); }
+.legend-row { display:flex; align-items:center; gap:8px; flex-wrap:wrap; padding:12px 36px 0; }
+.legend-item { display:flex; align-items:center; gap:4px; font-size:10px; color:#666; }
+.legend-dot { width:7px; height:7px; border-radius:2px; }
+.section-divider { display:flex; align-items:center; gap:12px; padding:22px 36px 0; }
+.section-divider-label { font-size:11px; font-weight:700; color:#555; text-transform:uppercase; letter-spacing:.09em; white-space:nowrap; }
+.section-divider-line { flex:1; height:1px; background:#2a2a2a; }
+/* Generate / Detail shared view */
+.gen-view { flex:1; display:none; overflow:hidden; }
+.gen-view.active { display:flex; }
+.gen-main { flex:1; overflow-y:auto; padding:24px 32px; background:#1a1a1a; }
+.gen-right { width:260px; background:#1e1e1e; border-left:1px solid #2a2a2a; padding:18px; overflow-y:auto; flex-shrink:0; }
+.gen-bc { display:flex; align-items:center; gap:8px; font-size:12px; color:#555; margin-bottom:20px; flex-wrap:wrap; }
+.gen-bc-btn { background:#252525; border:1px solid #333; color:#aaa; padding:4px 12px; border-radius:6px; cursor:pointer; font-size:12px; }
+.gen-bc-btn:hover { border-color:#555; color:#e0e0e0; }
+.gen-feat-row { display:flex; align-items:flex-start; gap:14px; margin-bottom:20px; }
+.gen-feat-icon { font-size:30px; }
+.gen-feat-title { font-size:17px; font-weight:700; color:#eee; }
+.gen-feat-desc { font-size:12px; color:#555; margin-top:3px; }
+/* Scenario list (detail view) */
+.scenario-list { display:flex; flex-direction:column; gap:10px; margin-top:4px; }
+.scenario-row { background:#252525; border:1px solid #333; border-radius:10px; padding:14px 16px; display:flex; align-items:flex-start; gap:12px; transition:border-color .15s; }
+.scenario-row:hover { border-color:#444; }
+.scenario-icon { font-size:22px; flex-shrink:0; margin-top:2px; }
+.scenario-info { flex:1; min-width:0; }
+.scenario-name { font-size:13px; font-weight:600; color:#e0e0e0; margin-bottom:3px; }
+.scenario-desc { font-size:11px; color:#666; line-height:1.5; margin-bottom:8px; }
+.scenario-try { flex-shrink:0; background:#2a2a2a; border:1px solid #3a3a3a; color:#2dd4bf; font-size:11px; font-weight:700; padding:6px 14px; border-radius:7px; cursor:pointer; transition:all .15s; white-space:nowrap; }
+.scenario-try:hover { background:#2dd4bf; color:#000; border-color:#2dd4bf; }
+/* Generate view */
+.draft-bar { display:flex; gap:8px; margin-bottom:18px; flex-wrap:wrap; }
+.draft-pill { font-size:10px; font-weight:600; padding:3px 10px; border-radius:100px; border:1px solid #2e2e2e; color:#444; cursor:pointer; transition:all .15s; }
+.draft-pill.on { background:#251a30; color:#d08af5; border-color:#4a2a6e; }
+.preset-panel { background:#252525; border:1px solid #333; border-radius:10px; padding:14px; margin-bottom:14px; }
+.preset-hdr { display:flex; justify-content:space-between; align-items:center; cursor:pointer; user-select:none; }
+.preset-hdr-left { display:flex; align-items:center; gap:6px; font-size:12px; font-weight:600; color:#ddd; }
+.preset-hdr-sub { color:#555; font-weight:400; }
+.preset-hdr-right { display:flex; align-items:center; gap:10px; }
+.toggle-mini-d { display:inline-flex; background:#1a1a1a; border-radius:12px; padding:2px; font-size:10px; border:1px solid #2e2e2e; }
+.toggle-mini-d span { padding:3px 8px; border-radius:10px; color:#555; cursor:pointer; }
+.toggle-mini-d span.on { background:#333; color:#e0e0e0; font-weight:600; }
+.preset-body { margin-top:12px; }
+.preset-chips { display:flex; flex-wrap:wrap; gap:6px; margin-bottom:12px; }
+.pchip { padding:4px 12px; border-radius:100px; font-size:11px; border:1px solid #333; color:#777; cursor:pointer; }
+.pchip.on { background:#2dd4bf; color:#000; border-color:#2dd4bf; font-weight:600; }
+.pchip.add { color:#2dd4bf; border-color:#004a44; }
+.field-grid2 { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+.pfield { background:#1e1e1e; border:1px solid #2a2a2a; border-radius:6px; padding:8px 10px; cursor:pointer; }
+.pfield-lbl { font-size:9px; color:#555; text-transform:uppercase; letter-spacing:.3px; margin-bottom:3px; }
+.pfield-val { font-size:11px; color:#bbb; }
+.json-dark { background:#141414; color:#34d399; font-family:"SF Mono",Menlo,monospace; font-size:10px; padding:12px; border-radius:6px; line-height:1.6; white-space:pre; overflow-x:auto; margin-top:4px; }
+.jk { color:#93c5fd; } .js { color:#fcd34d; } .jn { color:#f9a8d4; }
+.prompt-area { background:#252525; border:1px solid #333; border-radius:10px; padding:14px; margin-bottom:12px; }
+.prompt-ta { width:100%; background:transparent; border:none; color:#ccc; font-size:13px; min-height:80px; resize:none; outline:none; font-family:inherit; line-height:1.6; }
+.prompt-ta::placeholder { color:#3a3a3a; }
+.prompt-tools { display:flex; gap:8px; margin-top:10px; padding-top:10px; border-top:1px solid #2e2e2e; align-items:center; }
+.ptool { font-size:16px; background:transparent; border:none; color:#444; cursor:pointer; }
+.gen-row { display:flex; justify-content:space-between; align-items:center; }
+.model-boxes { display:flex; gap:8px; }
+.mbox { background:#252525; border:1px solid #2e2e2e; color:#666; padding:5px 10px; border-radius:6px; font-size:11px; }
+.gen-btn-main { background:#2dd4bf; color:#000; font-size:13px; font-weight:700; padding:9px 24px; border-radius:9px; border:none; cursor:pointer; }
+.results-title { font-size:13px; font-weight:600; color:#bbb; margin-bottom:16px; }
+.results-empty { text-align:center; padding:48px 8px; }
+.results-empty-icon { font-size:40px; margin-bottom:12px; opacity:.15; }
+.results-empty-txt { font-size:11px; color:#3a3a3a; line-height:1.7; }
+.inspector-block { background:#252525; border:1px solid #2e2e2e; border-radius:8px; padding:12px; margin-bottom:10px; }
+.insp-lbl { font-size:10px; font-weight:700; color:#555; text-transform:uppercase; letter-spacing:.06em; margin-bottom:8px; }
+.insp-row { display:flex; justify-content:space-between; font-size:11px; color:#666; margin-bottom:6px; }
+.insp-row .val { color:#aaa; }
+.draft-note { background:#1e1e1e; border:1px solid #2e2e2e; border-radius:8px; padding:12px; font-size:11px; color:#555; line-height:1.6; margin-top:12px; }
+.detail-section-badge { display:inline-flex; align-items:center; gap:5px; font-size:11px; font-weight:600; color:#888; background:#2a2a2a; padding:4px 10px; border-radius:6px; margin-bottom:18px; }
+/* Tag filter bar */
+.filter-outer { border-bottom:1px solid #282828; background:#1e1e1e; flex-shrink:0; }
+.filter-toggle-row { display:flex; align-items:center; gap:10px; padding:9px 24px; cursor:pointer; user-select:none; }
+.filter-toggle-row:hover { background:#242424; }
+.filter-toggle-label { font-size:11px; font-weight:700; color:#888; text-transform:uppercase; letter-spacing:.09em; }
+.filter-toggle-arrow { font-size:9px; color:#555; transition:transform .2s; }
+.filter-toggle-arrow.open { transform:rotate(180deg); }
+.filter-active-count { font-size:10px; font-weight:700; background:#2dd4bf22; color:#2dd4bf; border:1px solid #2dd4bf44; padding:1px 7px; border-radius:10px; display:none; }
+.filter-active-count.visible { display:inline; }
+.tag-filter-bar { display:flex; align-items:flex-start; gap:8px; flex-wrap:wrap; padding:14px 24px 14px; overflow:visible; transition:max-height .25s ease, padding .2s; }
+.tag-filter-bar.collapsed { max-height:0; padding-top:0; padding-bottom:0; overflow:hidden; }
+.tag-filter-group { font-size:10px; font-weight:700; color:#555; text-transform:uppercase; letter-spacing:.07em; width:130px; min-width:130px; flex-shrink:0; white-space:nowrap; padding-top:3px; }
+.filter-section-divider { display:flex; align-items:center; gap:10px; padding:6px 0 2px; }
+.filter-section-divider-line { flex:1; height:1px; background:#2a2a2a; }
+.filter-section-divider-label { font-size:9px; font-weight:700; color:#444; text-transform:uppercase; letter-spacing:.1em; white-space:nowrap; }
+.tag-filter-chip { font-size:10px; font-weight:600; padding:3px 10px; border-radius:100px; cursor:pointer; transition:all .15s; opacity:0.55; border:1px solid transparent; user-select:none; }
+.tag-filter-chip:hover { opacity:0.85; }
+.tag-filter-chip.active { opacity:1; box-shadow:0 0 0 1.5px currentColor; filter:brightness(1.2); }
+.tag-filter-clear { font-size:10px; color:#555; cursor:pointer; padding:3px 10px; border-radius:100px; border:1px solid #3a3a3a; transition:all .15s; }
+.tag-filter-clear:hover { color:#ccc; border-color:#666; }
+.tag-filter-clear.hidden { display:none; }
+.card.filtered-out { display:none; }
+</style>
+</head>
+<body>
+<div class="layout">
+  <header class="topnav">
+    <div class="topnav-logo"><div class="logo-icon">✦</div>AI Studio<span class="beta-badge">BETA</span></div>
+    <div class="topnav-space"></div>
+    <span class="topnav-link">Contact us</span>
+    <button class="btn-signin">Sign In</button>
+  </header>
+
+  <!-- FILTER BAR (always visible, above sidebar+content) -->
+  <div id="filter-outer-slot"></div>
+
+  <div class="body-row">
+    <nav class="sidebar" id="sidebar">
+      <!-- rendered by JS -->
+    </nav>
+
+    <!-- CATALOG VIEW -->
+    <main class="main" id="view-catalog">
+      <!-- legend + sections rendered by JS -->
+    </main>
+
+    <!-- DETAIL VIEW -->
+    <div class="gen-view" id="view-detail">
+      <div class="gen-main">
+        <div class="gen-bc">
+          <button class="gen-bc-btn" onclick="goHome()">← All Features</button>
+          <span>/</span><span id="dt-section" style="color:#555;"></span>
+          <span>/</span><span id="dt-name" style="color:#aaa;"></span>
+        </div>
+        <div class="gen-feat-row">
+          <span id="dt-icon" class="gen-feat-icon">🖼️</span>
+          <div>
+            <div id="dt-title" class="gen-feat-title"></div>
+            <div id="dt-desc" class="gen-feat-desc"></div>
+          </div>
+        </div>
+        <div class="detail-section-badge" id="dt-badge"></div>
+        <div class="scenario-list" id="dt-scenarios"></div>
+      </div>
+      <div class="gen-right">
+        <div class="results-title">Scenarios</div>
+        <div id="dt-right-summary" style="font-size:11px;color:#555;line-height:1.7;"></div>
+      </div>
+    </div>
+
+    <!-- GENERATE VIEW -->
+    <div class="gen-view" id="view-generate">
+      <div class="gen-main">
+        <div class="gen-bc">
+          <button class="gen-bc-btn" onclick="goHome()">← All Features</button>
+          <span>/</span>
+          <button class="gen-bc-btn" id="bc-card-btn" onclick="backToDetail()">…</button>
+          <span>/</span><span id="bc-section" style="color:#555;"></span>
+          <span>/</span><span id="bc-name" style="color:#aaa;"></span>
+        </div>
+        <div class="gen-feat-row">
+          <span id="g-icon" class="gen-feat-icon">🖼️</span>
+          <div><div id="g-title" class="gen-feat-title"></div><div id="g-desc" class="gen-feat-desc"></div></div>
+        </div>
+        <div class="draft-bar">
+          <span class="draft-pill on" id="dp-a" onclick="switchDraft('a')">Draft A · Preset Panel</span>
+          <span class="draft-pill" id="dp-b" onclick="switchDraft('b')">Draft B · Templates</span>
+          <span class="draft-pill" id="dp-c" onclick="switchDraft('c')">Draft C · Flow Editor</span>
+        </div>
+        <div id="draft-a">
+          <div class="preset-panel">
+            <div class="preset-hdr" onclick="togglePreset()">
+              <div class="preset-hdr-left">⚙️ <span>Style Preset</span><span class="preset-hdr-sub" id="preset-label">· Editorial Fashion</span></div>
+              <div class="preset-hdr-right">
+                <div class="toggle-mini-d"><span class="on" id="t-form" onclick="switchView(event,'form')">Form</span><span id="t-json" onclick="switchView(event,'json')">JSON</span></div>
+                <span id="preset-caret" style="font-size:13px;color:#555;">▲</span>
+              </div>
+            </div>
+            <div class="preset-body" id="preset-body">
+              <div id="pv-form">
+                <div class="preset-chips">
+                  <span class="pchip on" onclick="selectChip(this)">Editorial</span>
+                  <span class="pchip" onclick="selectChip(this)">Streetwear</span>
+                  <span class="pchip" onclick="selectChip(this)">Minimal</span>
+                  <span class="pchip" onclick="selectChip(this)">Vintage</span>
+                  <span class="pchip add">+ Custom</span>
+                </div>
+                <div class="field-grid2">
+                  <div class="pfield"><div class="pfield-lbl">Lighting</div><div class="pfield-val">Soft natural ▾</div></div>
+                  <div class="pfield"><div class="pfield-lbl">Background</div><div class="pfield-val">Studio gray ▾</div></div>
+                  <div class="pfield"><div class="pfield-lbl">Camera angle</div><div class="pfield-val">Three-quarter ▾</div></div>
+                  <div class="pfield"><div class="pfield-lbl">Aspect ratio</div><div class="pfield-val">3:4 ▾</div></div>
+                  <div class="pfield"><div class="pfield-lbl">Model type</div><div class="pfield-val">Female · Asian ▾</div></div>
+                  <div class="pfield"><div class="pfield-lbl">Mood / Tone</div><div class="pfield-val">Editorial ▾</div></div>
+                </div>
+              </div>
+              <div id="pv-json" style="display:none;">
+<pre class="json-dark">{
+  <span class="jk">"preset"</span>: <span class="js">"editorial_fashion"</span>,
+  <span class="jk">"lighting"</span>: <span class="js">"soft_natural"</span>,
+  <span class="jk">"background"</span>: <span class="js">"studio_gray"</span>,
+  <span class="jk">"camera"</span>: <span class="js">"three_quarter"</span>,
+  <span class="jk">"ratio"</span>: <span class="js">"3:4"</span>,
+  <span class="jk">"model"</span>: <span class="js">"female_asian"</span>,
+  <span class="jk">"strength"</span>: <span class="jn">0.85</span>
+}</pre>
+              </div>
+            </div>
+          </div>
+          <div class="prompt-area">
+            <textarea class="prompt-ta" placeholder="Enter your prompt to get started…&#10;e.g. A woman in a beige linen trench coat, walking in soft morning light"></textarea>
+            <div class="prompt-tools">
+              <button class="ptool">🖼️</button><button class="ptool">📌</button><button class="ptool">↺</button>
+              <div style="flex:1"></div><span style="font-size:10px;color:#333;">0 / 500</span>
+            </div>
+          </div>
+          <div class="gen-row">
+            <div class="model-boxes"><span class="mbox">1 image ▾</span><span class="mbox">CLO-Gemini-Pro ▾</span></div>
+            <button class="gen-btn-main">Generate ✦</button>
+          </div>
+        </div>
+        <div id="draft-b" style="display:none;">
+          <div style="background:#1e2e1e;border:1px solid #2a4a2a;border-radius:10px;padding:16px 18px;margin-bottom:14px;font-size:12px;color:#5ecf80;">📌 Active layer: <strong>Editorial Look</strong> — 7 parameters locked &nbsp;<span style="color:#3a7a3a;text-decoration:underline;cursor:pointer;">Edit template</span></div>
+          <div class="prompt-area"><textarea class="prompt-ta" placeholder="A woman in a beige trench coat walking…"></textarea></div>
+          <div class="gen-row"><div class="model-boxes"><span class="mbox">1 image ▾</span><span class="mbox">CLO-Gemini-Pro ▾</span></div><button class="gen-btn-main">Generate ✦</button></div>
+          <div class="draft-note" style="margin-top:14px;"><b style="color:#888;">Draft B:</b> Template parameters locked from My Templates.</div>
+        </div>
+        <div id="draft-c" style="display:none;">
+          <div style="background:#1a1a2e;border:1px solid #2a2a4a;border-radius:10px;padding:16px;margin-bottom:14px;">
+            <div style="font-size:11px;color:#555;margin-bottom:12px;">⚡ Flow Editor</div>
+            <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap;">
+              <div style="background:#1e2a3e;border:1px solid #3a5aff40;border-radius:8px;padding:8px 12px;font-size:11px;"><div style="font-size:9px;color:#555;text-transform:uppercase;margin-bottom:4px;">① Input</div><div style="color:#ccc;">User prompt</div></div>
+              <div style="color:#333;font-size:16px;">→</div>
+              <div style="background:#281e3a;border:1px solid #7c3aed40;border-radius:8px;padding:8px 12px;font-size:11px;"><div style="font-size:9px;color:#555;text-transform:uppercase;margin-bottom:4px;">② Layer</div><div style="color:#ccc;">Style preset</div></div>
+              <div style="color:#333;font-size:16px;">→</div>
+              <div style="background:#281e3a;border:1px solid #7c3aed40;border-radius:8px;padding:8px 12px;font-size:11px;"><div style="font-size:9px;color:#555;text-transform:uppercase;margin-bottom:4px;">③ Enhancer</div><div style="color:#ccc;">Auto-rewrite</div></div>
+              <div style="color:#333;font-size:16px;">→</div>
+              <div style="background:#1e2a1e;border:1px solid #34d39940;border-radius:8px;padding:8px 12px;font-size:11px;"><div style="font-size:9px;color:#555;text-transform:uppercase;margin-bottom:4px;">④ Output</div><div style="color:#ccc;">1 image · 3:4</div></div>
+            </div>
+          </div>
+          <div class="prompt-area"><textarea class="prompt-ta" placeholder="Enter your prompt — it will flow through the layers above"></textarea></div>
+          <div class="gen-row"><div class="model-boxes"><span class="mbox">Editorial v2 ▾</span></div><button class="gen-btn-main" style="background:#7c3aed;color:#fff;">Run Flow ▶</button></div>
+        </div>
+      </div>
+      <div class="gen-right">
+        <div class="results-title">Results</div>
+        <div class="inspector-block">
+          <div class="insp-lbl">Active Preset</div>
+          <div class="insp-row"><span>Preset</span><span class="val">Editorial Fashion</span></div>
+          <div class="insp-row"><span>Lighting</span><span class="val">Soft natural</span></div>
+          <div class="insp-row"><span>Background</span><span class="val">Studio gray</span></div>
+          <div class="insp-row"><span>Ratio</span><span class="val">3:4</span></div>
+          <div class="insp-row"><span>Strength</span><span class="val">0.85</span></div>
+        </div>
+        <div class="results-empty">
+          <div class="results-empty-icon">🖼️</div>
+          <div class="results-empty-txt">Generated images will appear here.<br>Enter a prompt and click Generate.</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const TAG_DEFS = {
+  'existing':     { cls:'tag-existing',    label:'● Existing in Web' },
+  'sw':           { cls:'tag-sw',          label:'● Existing in SW' },
+  'style3d':      { cls:'tag-style3d',     label:'● Style3D' },
+  'developing':   { cls:'tag-developing',  label:'● Developing' },
+  'soho':         { cls:'tag-soho',        label:'● SOHO' },
+  'nano-yes':     { cls:'tag-nano-yes',    label:'😊 Nano-Yes' },
+  'nano-yb':      { cls:'tag-nano-yb',     label:'😐 Nano-Yes,but' },
+  'nano-no':      { cls:'tag-nano-no',     label:'😢 Nano-No' },
+  'huiwacn-good': { cls:'tag-huiwacn-good',label:'😊 HuiwaCN-good' },
+  'huiwacn-soso': { cls:'tag-huiwacn-soso',label:'😐 HuiwaCN-soso' },
+  'huiwacn-bad':  { cls:'tag-huiwacn-bad', label:'😢 HuiwaCN-bad' },
+  'huiwakr-good': { cls:'tag-huiwakr-good',label:'😊 HuiwaKR-good' },
+  'huiwakr-soso': { cls:'tag-huiwakr-soso',label:'😐 HuiwaKR-soso' },
+  'huiwakr-bad':  { cls:'tag-huiwakr-bad', label:'😢 HuiwaKR-bad' },
+  'lingyang':     { cls:'tag-lingyang',    label:'● Lingyang' },
+  // Impact tiers
+  'i1': { cls:'tag-i1', label:'🔴 Phase 1' },
+  'i2': { cls:'tag-i2', label:'🟠 Phase 2' },
+  'i3': { cls:'tag-i3', label:'🟡 Phase 3' },
+  'i4': { cls:'tag-i4', label:'🔵 Phase 4' },
+  // Test quality tiers
+  'q1': { cls:'tag-q1', label:'✅ Ship Ready' },
+  'q2': { cls:'tag-q2', label:'🔶 Fine-tuning' },
+  'q3': { cls:'tag-q3', label:'⚪ Not Tested' },
+  'q4': { cls:'tag-q4', label:'❌ Poor Results' },
+};
+const AVAIL_TAGS = ['existing','sw','style3d','developing','soho','lingyang'];
+
+const SECTION_META = {
+  trend:    { icon:'📡', label:'AI Trend',          desc:'Stay ahead of the market — discover trends and translate them into design directions.' },
+  design:   { icon:'✦',  label:'Design Ideation',   desc:'Generate and validate design concepts fast — from text, sketches, to technical drawings.' },
+  material: { icon:'◈',  label:'Material & Trim',   desc:'Simulate fabrics, textures, embroideries, and trims without physical samples.' },
+  '3d':     { icon:'◉',  label:'3D Sampling',       desc:'Review and refine products in 3D before any physical sample is made.' },
+  shoot:    { icon:'◎',  label:'Virtual Shoot',     desc:'Studio-quality campaign imagery — no photographer, no model booking required.' },
+  marketing:{ icon:'▶',  label:'Marketing Content', desc:'Produce video, catalogs, and VMD at 1/10 the cost of traditional production.' },
+};
+
+// Impact tier per scenario name (from aistudio_priority.html)
+const IMPACT_TIER = {
+  'Change Model & Background':'i1','Garment to Flat Lay':'i1','Generate Views':'i1',
+  'Garment Detail Shots':'i1','Apply Print to Garment':'i1','Catalog Generator':'i1',
+  'Outfit Try-On':'i1','Colorway Generator':'i1','Flat to 3D':'i1',
+  'Design Variations':'i2','Garment Refine':'i2','Apply Pattern to Garment':'i2',
+  'Change Pose':'i2','Virtual Accessories Try-On':'i2','Image to Video':'i2',
+  'Fabric Try-On':'i2','Model Variations':'i2',
+  'Graphic Generator':'i3','Extract Technical Drawing':'i3','Graphic Mixer':'i3',
+  'Smart Cutout & Selection':'i3','Fashion Inspiration Content':'i3','AI Trim Generator':'i3',
+  'Graphic Extractor':'i3','Style Variants':'i3','Realistic to Line Art':'i3',
+  'Image Retouch':'i4','Face Swap':'i4','Garment Pattern Generator':'i4',
+  'VMD & Store Display':'i4','Trend Forecast':'i4','Consumer Insights':'i4',
+  'Category & Market Analysis':'i4','Social Media Insights':'i4',
+  'Color Palette Generator':'i4','Trend to Design':'i4',
+};
+// Test quality tier per scenario name (from aistudio_testmap.html); unspecified → 'q3'
+const TEST_TIER = {
+  'Garment to Flat Lay':'q1','Garment Detail Shots':'q1','Colorway Generator':'q1',
+  'Flat to 3D':'q1','Virtual Accessories Try-On':'q1','AI Trim Generator':'q1','Realistic to Line Art':'q1',
+  'Change Model & Background':'q2','Catalog Generator':'q2','Outfit Try-On':'q2',
+  'Change Pose':'q2','Image to Video':'q2','Fabric Try-On':'q2',
+  'Smart Cutout & Selection':'q2','Fashion Inspiration Content':'q2',
+  'Style Variants':'q4','Image Retouch':'q4','Face Swap':'q4',
+};
+function getScenarioTierTags(sc) {
+  const it = IMPACT_TIER[sc.name];
+  // q4 only for explicitly marked bad; q3 = not yet tested (default for anything without a test result)
+  const qt = TEST_TIER[sc.name] !== undefined ? TEST_TIER[sc.name] : 'q3';
+  return [it, qt].filter(Boolean);
+}
+
+const CARDS = [
+  // ── AI Trend ──
+  { id:'market-intelligence', section:'trend', accent:'accent-indigo', emoji:'📡', title:'Market Intelligence',
+    desc:'Track consumer behavior, category trends, and social sentiment across platforms.',
+    scenarios:[
+      { emoji:'🌐', name:'Trend Forecast',         desc:'Real-time analysis across runway, street, and social media.',            tags:['soho','lingyang'] },
+      { emoji:'👥', name:'Consumer Insights',       desc:'AI-driven target audience profiling from e-commerce data.',             tags:['soho','lingyang'] },
+      { emoji:'📊', name:'Category & Market Analysis', desc:'Price band analysis and market opportunity mapping.',                tags:['soho','lingyang'] },
+      { emoji:'📣', name:'Social Media Insights',   desc:'Track hot topics, VOC, and consumer sentiment across platforms.',       tags:['soho','lingyang'] },
+    ]},
+  { id:'creative-trend', section:'trend', accent:'accent-indigo', emoji:'💡', title:'Creative Trend',
+    desc:'Translate trend intelligence into seasonal color palettes and garment concept images.',
+    scenarios:[
+      { emoji:'🎨', name:'Color Palette Generator', desc:'Seasonal palettes generated from current trend data.',                  tags:['lingyang'] },
+      { emoji:'💡', name:'Trend to Design',          desc:'Turn trend insights into garment concept images instantly.',           tags:['soho','lingyang'] },
+      { emoji:'🎯', name:'Style & Fabric Recommendation', desc:'AI agent recommends style and fabric combos based on brand positioning, market trends, and past sales data.', tags:['soho'] },
+    ]},
+  // ── Design Ideation ──
+  { id:'ai-design-generator', section:'design', accent:'accent-purple', emoji:'🖼️', title:'AI Design Generator',
+    desc:'Generate garment concepts from text, sketch, or reference — then refine with targeted inpainting.',
+    scenarios:[
+      { emoji:'🖼️', name:'Design (Style)', desc:'Generate garment concepts from text, sketch, or reference image.',      tags:['existing','style3d','soho','nano-yes','nano-yb','huiwacn-good','huiwacn-soso','huiwakr-bad'] },
+      { emoji:'🔀', name:'Design Variations',       desc:'Blend design elements from multiple references into new style directions.', tags:['style3d','soho'] },
+      { emoji:'✍️', name:'Garment Refine',          desc:'Update local garment details precisely — collar, sleeves, closures.',  tags:['style3d','soho'] },
+    ]},
+  { id:'colorway-generator', section:'design', accent:'accent-purple', emoji:'🌈', title:'Colorway Generator',
+    desc:'Input a design image and generate multiple colorway variations instantly.',
+    scenarios:[
+      { emoji:'🌈', name:'Colorway Generator',      desc:'Generate multiple colorway variations from a design image.',           tags:['style3d','soho','nano-yes','huiwakr-soso'] },
+    ]},
+  { id:'line-art-technical', section:'design', accent:'accent-purple', emoji:'✏️', title:'Line Art & Technical',
+    desc:'Convert garment images into clean line art drawings and vector-ready technical flats.',
+    scenarios:[
+      { emoji:'✏️', name:'Realistic to Line Art',   desc:'Convert a realistic garment image into a clean line art drawing.',     tags:['nano-yes'] },
+      { emoji:'📐', name:'Extract Technical Drawing',desc:'Convert style images into sketches and vector-ready flat technical drawings.', tags:['style3d','soho'] },
+    ]},
+  { id:'graphic-pattern', section:'design', accent:'accent-purple', emoji:'🪡', title:'Graphic & Pattern',
+    desc:'Create print motifs, surface designs, and AI-generated 2D sewing patterns.',
+    scenarios:[
+      { emoji:'🪡', name:'Graphic Generator',        desc:'Create print motifs and surface designs from text or reference.',     tags:['sw','style3d'] },
+      { emoji:'📋', name:'Garment Pattern Generator',desc:'AI-generated 2D sewing patterns from design images.',                 tags:[] },
+    ]},
+  // ── Material & Trim ──
+  { id:'fabric-texture', section:'material', accent:'accent-teal', emoji:'🧶', title:'Fabric & Texture',
+    desc:'Generate fabric textures and normal maps, then apply material swaps directly to garments.',
+    scenarios:[
+      { emoji:'🧶', name:'Texture Generator',        desc:'Generate fabric textures and normal maps from text or reference.',    tags:['sw','soho'] },
+      { emoji:'🪡', name:'Fabric Try-On',            desc:'Swap fabric materials on an existing garment image.',                 tags:['style3d','nano-yb'] },
+    ]},
+  { id:'ai-trim-generator', section:'material', accent:'accent-teal', emoji:'🪢', title:'AI Trim Generator',
+    desc:'Generate embroidery, lace, buttons, and trimmings. Apply craft effects to print patterns.',
+    scenarios:[
+      { emoji:'🪢', name:'AI Trim Generator',        desc:'Generate embroidery, lace, buttons, and trimmings with craft effects.', tags:['developing','style3d','soho','nano-yes'] },
+    ]},
+  { id:'apply-to-garment', section:'material', accent:'accent-teal', emoji:'🔁', title:'Apply to Garment',
+    desc:'Place prints, patterns, and graphics on garments with precise positioning.',
+    scenarios:[
+      { emoji:'🔁', name:'Apply Print to Garment',   desc:'Place prints and patterns on garments with precise positioning.',    tags:['style3d','soho'] },
+      { emoji:'🔂', name:'Apply Pattern to Garment', desc:'Apply repeat patterns across garment with size-accurate layout.',   tags:['style3d','soho'] },
+    ]},
+  { id:'graphic-tools', section:'material', accent:'accent-teal', emoji:'🎛️', title:'Graphic Tools',
+    desc:'Mix multiple patterns into unified prints and extract graphics from reference images.',
+    scenarios:[
+      { emoji:'🎛️', name:'Graphic Mixer',            desc:'Combine elements from multiple patterns into one natural, unified print.', tags:['style3d','soho'] },
+      { emoji:'🔎', name:'Graphic Extractor',         desc:'Detect and extract complete graphic patterns from product or reference images.', tags:['style3d','soho'] },
+    ]},
+  // ── 3D Sampling ──
+  { id:'3d-visualization', section:'3d', accent:'accent-rose', emoji:'📦', title:'3D Visualization',
+    desc:'Convert 2D flat patterns to 3D product views and upscale renders to photorealistic quality.',
+    scenarios:[
+      { emoji:'📦', name:'Flat to 3D',              desc:'Convert flat lay or 2D pattern images into 3D product views.',        tags:['style3d','huiwacn-good'] },
+      { emoji:'✨', name:'Render Enhancer',          desc:'Upscale 3D renders to photorealistic 4K–8K quality.',                tags:['sw','nano-no','huiwakr-soso'] },
+    ]},
+  { id:'ai-pose-generator', section:'3d', accent:'accent-rose', emoji:'🕺', title:'AI Pose Generator',
+    desc:'Generate natural poses in the 3D viewer with WASM-based AI motion engine.',
+    scenarios:[
+      { emoji:'🕺', name:'AI Pose Generator',        desc:'Generate natural poses in the 3D viewer (WASM-based).',              tags:['sw'] },
+    ]},
+  { id:'product-photography', section:'3d', accent:'accent-rose', emoji:'🔍', title:'Product Photography',
+    desc:'Auto-generate close-up detail shots and clean flat lay images from garment photos.',
+    scenarios:[
+      { emoji:'🔍', name:'Garment Detail Shots',     desc:'Auto-generate close-up shots of fabric, stitching, and trims.',      tags:['style3d','soho','huiwacn-good','huiwakr-soso'] },
+      { emoji:'🗂️', name:'Garment to Flat Lay',     desc:'Extract a clean flat lay from any product or model photo.',          tags:['style3d','nano-yes','huiwacn-good','huiwacn-soso','huiwakr-soso'] },
+    ]},
+  // ── Virtual Shoot ──
+  { id:'virtual-try-on', section:'shoot', accent:'accent-amber', emoji:'👚', title:'Virtual Try-On',
+    desc:'Dress models with garments, accessories, and full outfits naturally and realistically.',
+    scenarios:[
+      { emoji:'👚', name:'Virtual Garment Try-On',   desc:'Dress a model with your garment naturally and realistically.',        tags:['existing','style3d','soho','nano-no','huiwacn-good','huiwacn-soso','huiwakr-soso'] },
+      { emoji:'👗', name:'Outfit Try-On',            desc:'Combine top, bottom, and accessories into a full-look image.',        tags:['style3d','huiwacn-soso'] },
+      { emoji:'👡', name:'Virtual Accessories Try-On',desc:'Try on shoes, bags, and hats in one workflow.',                     tags:['style3d','huiwacn-good'] },
+    ]},
+  { id:'model-scene', section:'shoot', accent:'accent-amber', emoji:'🖼️', title:'Model & Scene',
+    desc:'Swap models, change poses, generate multi-angle views, and build model variations.',
+    scenarios:[
+      { emoji:'🖼️', name:'Change Model & Background',desc:'Swap model, ethnicity, scene, season, or generate new backgrounds.', tags:['style3d','soho','nano-yb','huiwacn-soso'] },
+      { emoji:'🤸', name:'Change Pose',              desc:'Quickly change model pose to generate varied results.',               tags:['style3d','soho','nano-yb'] },
+      { emoji:'🧑‍🤝‍🧑', name:'Model Variations',  desc:'Generate the same outfit on multiple model types at once.',          tags:['style3d','soho'] },
+      { emoji:'📸', name:'Generate Views',            desc:'Auto-generate front, side, and back angle shots.',                   tags:['style3d','soho'] },
+    ]},
+  { id:'image-editing', section:'shoot', accent:'accent-amber', emoji:'✂️', title:'Image Editing',
+    desc:'Cut out, retouch, and face-swap model imagery with AI precision.',
+    scenarios:[
+      { emoji:'✂️', name:'Smart Cutout & Selection', desc:'AI-powered area detection and masking for targeted editing.',         tags:['huiwakr-soso'] },
+      { emoji:'🧑', name:'Face Swap',                desc:'Replace model face using a prompt or reference image.',              tags:['nano-yb','nano-no'] },
+      { emoji:'🖌️', name:'Image Retouch',           desc:'Fix imperfect garment shots — lighting, proportion, face/hand/foot repair.', tags:['nano-no','huiwakr-soso'] },
+    ]},
+  { id:'style-variants', section:'shoot', accent:'accent-amber', emoji:'🔄', title:'Style Variants',
+    desc:'Generate multiple style and colorway variations of the same garment in one batch.',
+    scenarios:[
+      { emoji:'🔄', name:'Style Variants',           desc:'Generate multiple style and colorway variations in one batch.',       tags:['huiwacn-soso','huiwacn-bad'] },
+    ]},
+  // ── Marketing ──
+  { id:'image-to-video', section:'marketing', accent:'accent-blue', emoji:'🎬', title:'Image to Video',
+    desc:'Turn product images into promotional video content automatically.',
+    scenarios:[
+      { emoji:'🎬', name:'Image to Video',           desc:'Turn product images into promotional video content automatically.',   tags:['soho','huiwakr-soso'] },
+      { emoji:'🎪', name:'Digital Fashion Show',     desc:'Produce virtual runway shows using 3D models and AI-generated motion for digital product launches.', tags:['soho'] },
+    ]},
+  { id:'vmd-store', section:'marketing', accent:'accent-blue', emoji:'🏬', title:'VMD & Store Display',
+    desc:'Simulate window displays and in-store layouts with AI-generated VMD assets.',
+    scenarios:[
+      { emoji:'🏬', name:'VMD & Store Display',      desc:'Simulate window displays and in-store layouts.',                     tags:['soho'] },
+      { emoji:'🥽', name:'VR Showroom',              desc:'Build immersive VR exhibition halls using drone scanning and 3D modeling — virtual product launch spaces.', tags:['soho'] },
+    ]},
+  { id:'content-generator', section:'marketing', accent:'accent-blue', emoji:'📱', title:'Content Generator',
+    desc:'Batch-produce catalog assets and social media-ready fashion inspiration content.',
+    scenarios:[
+      { emoji:'📄', name:'Catalog Generator',         desc:'Batch-produce e-commerce and product detail page assets.',          tags:['soho','huiwacn-soso'] },
+      { emoji:'📱', name:'Fashion Inspiration Content',desc:'Generate social media-ready fashion inspiration and styling content.', tags:['soho','huiwacn-soso'] },
+      { emoji:'🏷️', name:'Digital Hangtag',         desc:'Create interactive digital hangtags with AI+3D — visually presenting fabric properties, size fitting, and care info.', tags:['soho'] },
+    ]},
+];
+
+let currentSection = 'all';
+let currentCardId = null;
+let activeTagFilters = new Set();
+let activeComboFilters = new Set(); // 'i1:q1' format
+
+// Non-empty matrix cells in priority order (impact high→low, then test quality good→bad)
+const COMBO_FILTERS = [
+  { id:'i1:q1', label:'🔴✅', desc:'Phase 1 · Ship Ready',     itColor:'#ef4444', qtColor:'#22c55e', count:4 },
+  { id:'i1:q2', label:'🔴🔶', desc:'Phase 1 · Fine-tuning',    itColor:'#ef4444', qtColor:'#eab308', count:3 },
+  { id:'i1:q3', label:'🔴⚪', desc:'Phase 1 · Not Tested',     itColor:'#ef4444', qtColor:'#6b7280', count:2 },
+  { id:'i2:q1', label:'🟠✅', desc:'Phase 2 · Ship Ready',         itColor:'#f97316', qtColor:'#22c55e', count:1 },
+  { id:'i2:q2', label:'🟠🔶', desc:'Phase 2 · Fine-tuning',        itColor:'#f97316', qtColor:'#eab308', count:3 },
+  { id:'i2:q3', label:'🟠⚪', desc:'Phase 2 · Not Tested',         itColor:'#f97316', qtColor:'#6b7280', count:4 },
+  { id:'i3:q1', label:'🟡✅', desc:'Phase 3 · Ship Ready',        itColor:'#eab308', qtColor:'#22c55e', count:2 },
+  { id:'i3:q2', label:'🟡🔶', desc:'Phase 3 · Fine-tuning',       itColor:'#eab308', qtColor:'#eab308', count:2 },
+  { id:'i3:q3', label:'🟡⚪', desc:'Phase 3 · Not Tested',        itColor:'#eab308', qtColor:'#6b7280', count:4 },
+  { id:'i3:q4', label:'🟡❌', desc:'Phase 3 · Poor Results',      itColor:'#eab308', qtColor:'#ef4444', count:1 },
+  { id:'i4:q3', label:'🔵⚪', desc:'Phase 4 · Not Tested',         itColor:'#6366f1', qtColor:'#6b7280', count:8 },
+  { id:'i4:q4', label:'🔵❌', desc:'Phase 4 · Poor Results',       itColor:'#6366f1', qtColor:'#ef4444', count:2 },
+];
+
+function scenarioMatchesCombo(scName, comboId) {
+  const [it, qt] = comboId.split(':');
+  const scIt = IMPACT_TIER[scName];
+  const scQt = TEST_TIER[scName] !== undefined ? TEST_TIER[scName] : (IMPACT_TIER[scName] ? 'q3' : null);
+  return scIt === it && scQt === qt;
+}
+
+function makeTags(tagArr) {
+  return tagArr.map(t => {
+    const d = TAG_DEFS[t];
+    if (!d) return '';
+    return `<span class="tag ${d.cls}">${d.label}</span>`;
+  }).join('');
+}
+
+function getCardAvailTags(card) {
+  const seen = new Set();
+  card.scenarios.forEach(s => s.tags.filter(t => AVAIL_TAGS.includes(t)).forEach(t => seen.add(t)));
+  return [...seen];
+}
+
+function renderSidebar() {
+  const sb = document.getElementById('sidebar');
+  let h = `<div id="nav-all" class="nav-parent active" onclick="filterSection('all')">
+    <span><span class="nav-parent-icon">⊞</span>All</span>
+  </div>`;
+  Object.entries(SECTION_META).forEach(([key, meta]) => {
+    const cards = CARDS.filter(c => c.section === key);
+    h += `<div id="nav-${key}" class="nav-parent" onclick="filterSection('${key}')">
+      <span><span class="nav-parent-icon">${meta.icon}</span>${meta.label}</span>
+      <span class="nav-arrow" id="arrow-${key}">▸</span>
+    </div>
+    <div id="children-${key}" class="nav-children" style="display:none;">`;
+    cards.forEach(c => {
+      h += `<div class="nav-child" id="nav-child-${c.id}" onclick="openCard('${c.id}')">${c.title}</div>`;
+    });
+    h += `</div>`;
+  });
+  h += `<hr class="nav-divider">
+  <div class="nav-parent"><span><span class="nav-parent-icon">📁</span>My Projects</span></div>
+  <div class="nav-parent"><span><span class="nav-parent-icon">🧵</span>Fabric Library</span></div>`;
+  sb.innerHTML = h;
+}
+
+// Each entry is a row; a row can have multiple inline groups (rendered on one line)
+const FILTER_ROWS = [
+  [{ label:'Availability', keys:['existing','sw','developing'] }],
+  [{ label:'Competitor',   keys:['style3d'] }],
+  [{ label:'Client',       keys:['soho'] }],
+  [{ label:'Collaborator', keys:['lingyang'] }],
+  [{ label:'Test Result',   keys:['nano-yes','nano-yb','nano-no','huiwacn-good','huiwacn-soso','huiwacn-bad','huiwakr-good','huiwakr-soso','huiwakr-bad'] }],
+  [{ divider:'Planning Criteria' }],
+  [{ label:'Market Impact', keys:['i1','i2','i3','i4'] }],
+  [{ label:'Test Quality',  keys:['q1','q2','q3','q4'] }],
+];
+// Flat list for detail-view iteration
+const FILTER_GROUPS = FILTER_ROWS.flat();
+
+let filterCollapsed = true;
+
+function renderTagFilter() {
+  const totalActive = activeTagFilters.size + activeComboFilters.size;
+  let h = `<div class="filter-outer" id="filter-outer">`;
+  // Toggle header row
+  h += `<div class="filter-toggle-row" onclick="toggleFilterPanel()">
+    <span class="filter-toggle-label">Filters</span>
+    <div id="filter-active-chips" style="display:flex;flex-wrap:wrap;gap:4px;align-items:center;"></div>
+    <span class="tag-filter-clear${totalActive > 0 ? '' : ' hidden'}" id="tag-filter-clear" style="margin-left:4px;" onclick="event.stopPropagation();clearTagFilters()">✕ Unselect All</span>
+    <div style="flex:1"></div>
+    <span class="filter-toggle-arrow${filterCollapsed ? '' : ' open'}" id="filter-arrow">▼</span>
+  </div>`;
+  // Body
+  h += `<div class="tag-filter-bar${filterCollapsed ? ' collapsed' : ''}" id="tag-filter-bar" style="flex-direction:column;gap:7px;">`;
+  FILTER_ROWS.forEach(row => {
+    // Divider row
+    if (row.length === 1 && row[0].divider) {
+      h += `<div class="filter-section-divider">
+        <span class="filter-section-divider-label">${row[0].divider}</span>
+        <div class="filter-section-divider-line"></div>
+      </div>`;
+      return;
+    }
+    // Normal row: label fixed-width + chips in their own wrap container
+    h += `<div style="display:flex;align-items:flex-start;flex-wrap:nowrap;gap:0;">`;
+    row.forEach(group => {
+      h += `<span class="tag-filter-group">${group.label}</span>`;
+      h += `<div style="display:flex;flex-wrap:wrap;gap:5px;margin-right:16px;">`;
+      group.keys.forEach(t => {
+        const def = TAG_DEFS[t];
+        if (!def) return;
+        const isActive = activeTagFilters.has(t);
+        h += `<span class="tag ${def.cls} tag-filter-chip${isActive ? ' active' : ''}" onclick="toggleTagFilter('${t}')">${def.label}</span>`;
+      });
+      h += `</div>`;
+    });
+    h += `</div>`;
+  });
+  h += `<div style="display:flex;align-items:center;flex-wrap:wrap;gap:5px;">`;
+  h += `<span class="tag-filter-group">Impact × Quality</span>`;
+  COMBO_FILTERS.forEach(c => {
+    const isActive = activeComboFilters.has(c.id);
+    h += `<span class="combo-chip${isActive ? ' active' : ''}" title="${c.desc}" onclick="toggleComboFilter('${c.id}')">${c.label}<span class="combo-count">${c.count}</span></span>`;
+  });
+  h += `</div>`;
+  h += `</div></div>`;
+  // Inject into fixed slot at top (outside sidebar/main layout)
+  const slot = document.getElementById('filter-outer-slot');
+  if (slot) { slot.innerHTML = h; updateFilterCount(); }
+  return ''; // catalog no longer needs to embed the filter
+}
+
+function toggleFilterPanel() {
+  filterCollapsed = !filterCollapsed;
+  const bar = document.getElementById('tag-filter-bar');
+  const arrow = document.getElementById('filter-arrow');
+  if (bar) {
+    bar.classList.toggle('collapsed', filterCollapsed);
+    bar.style.overflow = filterCollapsed ? 'hidden' : 'visible';
+  }
+  if (arrow) arrow.classList.toggle('open', !filterCollapsed);
+}
+
+function updateFilterCount() {
+  const total = activeTagFilters.size + activeComboFilters.size;
+  const clearBtn = document.getElementById('tag-filter-clear');
+  if (clearBtn) clearBtn.classList.toggle('hidden', total === 0);
+  const chipsEl = document.getElementById('filter-active-chips');
+  if (!chipsEl) return;
+  let html = '';
+  activeTagFilters.forEach(t => {
+    const def = TAG_DEFS[t];
+    if (!def) return;
+    html += `<span class="tag ${def.cls}" style="font-size:10px;font-weight:600;padding:2px 8px;border-radius:100px;cursor:pointer;opacity:1;" onclick="event.stopPropagation();toggleTagFilter('${t}')">${def.label}</span>`;
+  });
+  activeComboFilters.forEach(id => {
+    const c = COMBO_FILTERS.find(x => x.id === id);
+    if (!c) return;
+    html += `<span class="combo-chip active" style="font-size:11px;padding:2px 7px;opacity:1;" onclick="event.stopPropagation();toggleComboFilter('${id}')">${c.label}<span class="combo-count">${c.count}</span></span>`;
+  });
+  chipsEl.innerHTML = html;
+}
+
+// Sync active state across all filter chip bars
+function syncFilterChips() {
+  document.querySelectorAll('.tag-filter-chip').forEach(el => {
+    const m = el.getAttribute('onclick').match(/'([^']+)'/);
+    if (m) el.classList.toggle('active', activeTagFilters.has(m[1]));
+  });
+  document.querySelectorAll('.combo-chip').forEach(el => {
+    const m = el.getAttribute('onclick').match(/'([^']+)'/);
+    if (m) el.classList.toggle('active', activeComboFilters.has(m[1]));
+  });
+  updateFilterCount();
+}
+
+function toggleTagFilter(tag) {
+  if (activeTagFilters.has(tag)) activeTagFilters.delete(tag);
+  else activeTagFilters.add(tag);
+  applyTagFilter();
+  applyDetailTagFilter();
+  syncFilterChips();
+}
+
+function toggleComboFilter(comboId) {
+  if (activeComboFilters.has(comboId)) activeComboFilters.delete(comboId);
+  else activeComboFilters.add(comboId);
+  applyTagFilter();
+  applyDetailTagFilter();
+  syncFilterChips();
+}
+
+function clearTagFilters() {
+  activeTagFilters.clear();
+  activeComboFilters.clear();
+  applyTagFilter();
+  applyDetailTagFilter();
+  syncFilterChips();
+}
+
+// Detail filter calls the same shared toggle
+function toggleDetailTagFilter(tag) { toggleTagFilter(tag); }
+function clearDetailTagFilters() { clearTagFilters(); }
+
+function getScenarioEffectiveTags(sc) {
+  return [...sc.tags, ...getScenarioTierTags(sc)];
+}
+
+function scenarioMatchesFilters(sc) {
+  const effectiveTags = getScenarioEffectiveTags(sc);
+  const tagMatch = activeTagFilters.size > 0 && [...activeTagFilters].some(t => effectiveTags.includes(t));
+  const comboMatch = activeComboFilters.size > 0 && [...activeComboFilters].some(id => scenarioMatchesCombo(sc.name, id));
+  return tagMatch || comboMatch;
+}
+
+function applyDetailTagFilter() {
+  const anyActive = activeTagFilters.size > 0 || activeComboFilters.size > 0;
+  document.querySelectorAll('#dt-scenarios .scenario-row').forEach(el => {
+    // Detail view always shows all scenarios — just dim non-matching ones
+    el.style.display = '';
+    if (!anyActive) { el.style.opacity = ''; el.style.pointerEvents = ''; return; }
+    const tags = (el.getAttribute('data-tags') || '').split(',').filter(Boolean);
+    const scName = el.querySelector('.scenario-name')?.textContent || '';
+    const tagMatch = [...activeTagFilters].some(t => tags.includes(t));
+    const comboMatch = [...activeComboFilters].some(id => scenarioMatchesCombo(scName, id));
+    const matches = tagMatch || comboMatch;
+    el.style.opacity = matches ? '' : '0.3';
+    el.style.pointerEvents = matches ? '' : '';
+  });
+}
+
+function applyTagFilter() {
+  const anyActive = activeTagFilters.size > 0 || activeComboFilters.size > 0;
+  CARDS.forEach(card => {
+    const cardEl = document.querySelector(`.card[onclick="openCard('${card.id}')"]`);
+    if (!cardEl) return;
+    if (!anyActive) { cardEl.classList.remove('filtered-out'); return; }
+    const matches = card.scenarios.some(s => scenarioMatchesFilters(s));
+    cardEl.classList.toggle('filtered-out', !matches);
+  });
+  // Hide sidebar nav-child items with no matching scenarios
+  CARDS.forEach(card => {
+    const childEl = document.getElementById('nav-child-' + card.id);
+    if (!childEl) return;
+    const matches = !anyActive || card.scenarios.some(s => scenarioMatchesFilters(s));
+    childEl.style.display = matches ? '' : 'none';
+  });
+  // Hide sidebar nav items and section blocks with no matching cards
+  Object.keys(SECTION_META).forEach(secKey => {
+    const sectionCards = CARDS.filter(c => c.section === secKey);
+    const hasVisible = !anyActive || sectionCards.some(card =>
+      card.scenarios.some(s => scenarioMatchesFilters(s))
+    );
+    const navEl = document.getElementById('nav-' + secKey);
+    if (navEl) navEl.style.display = hasVisible ? '' : 'none';
+    const secEl = document.getElementById('sec-' + secKey);
+    if (secEl) secEl.setAttribute('data-filter-empty', hasVisible ? '0' : '1');
+    // Only update display if filterSection hasn't already hidden it
+    if (secEl) {
+      const hiddenBySection = currentSection !== 'all' && currentSection !== secKey;
+      secEl.style.display = (hiddenBySection || !hasVisible) ? 'none' : 'block';
+    }
+  });
+}
+
+function renderCatalog() {
+  const catalog = document.getElementById('view-catalog');
+  let h = renderTagFilter();
+
+  Object.entries(SECTION_META).forEach(([secKey, meta]) => {
+    const cards = CARDS.filter(c => c.section === secKey);
+    const isLast = secKey === 'marketing';
+    h += `<div class="section-block" id="sec-${secKey}">
+      <div class="section-divider"><span class="section-divider-label">${meta.icon} &nbsp;${meta.label}</span><div class="section-divider-line"></div></div>
+      <div class="section-wrap">
+        <div class="section-sub">${meta.desc}</div>
+        <div class="card-grid">`;
+    cards.forEach(card => {
+      const availTags = getCardAvailTags(card);
+      const scenCount = card.scenarios.length;
+      h += `<div class="card ${card.accent}" onclick="openCard('${card.id}')">
+        <div class="card-try">View →</div>
+        <div class="card-thumb">
+          <div class="card-thumb-bg"></div>
+          <div class="card-thumb-emoji">${card.emoji}</div>
+          ${scenCount > 1 ? `<div class="card-count">${scenCount} scenarios</div>` : ''}
+        </div>
+        <div class="card-body">
+          <div class="card-title">${card.title}</div>
+          <div class="card-desc">${card.desc}</div>
+          <div class="tags">${makeTags(availTags)}</div>
+        </div>
+      </div>`;
+    });
+    h += `</div></div>`;
+    if (!isLast) h += `<div class="divider"></div>`;
+    h += `</div>`;
+  });
+  catalog.innerHTML = h;
+}
+
+function filterSection(key) {
+  currentSection = key;
+  // Update nav
+  document.getElementById('nav-all').classList.toggle('active', key === 'all');
+  Object.keys(SECTION_META).forEach(k => {
+    const navEl = document.getElementById('nav-' + k);
+    if (navEl) navEl.classList.toggle('active', k === key);
+    const childEl = document.getElementById('children-' + k);
+    if (childEl) childEl.style.display = (k === key) ? 'block' : 'none';
+    const arrow = document.getElementById('arrow-' + k);
+    if (arrow) arrow.textContent = (k === key) ? '▾' : '▸';
+    const secEl = document.getElementById('sec-' + k);
+    if (secEl) {
+      const filterEmpty = secEl.getAttribute('data-filter-empty') === '1';
+      secEl.style.display = (filterEmpty || (key !== 'all' && k !== key)) ? 'none' : 'block';
+    }
+  });
+  showView('catalog');
+}
+
+function openCard(cardId) {
+  const card = CARDS.find(c => c.id === cardId);
+  if (!card) return;
+  currentCardId = cardId;
+  const meta = SECTION_META[card.section];
+
+  document.getElementById('dt-section').textContent = meta.label;
+  document.getElementById('dt-name').textContent = card.title;
+  document.getElementById('dt-icon').textContent = card.emoji;
+  document.getElementById('dt-title').textContent = card.title;
+  document.getElementById('dt-desc').textContent = card.desc;
+  document.getElementById('dt-badge').textContent = meta.icon + ' ' + meta.label;
+
+  // Collect all effective tags (incl. tier) used in this card's scenarios
+  const cardTagSet = new Set();
+  card.scenarios.forEach(s => getScenarioEffectiveTags(s).forEach(t => cardTagSet.add(t)));
+
+  // Build filter bar grouped — mark chips active based on shared activeTagFilters
+  let filterHtml = `<div class="tag-filter-bar" id="dt-tag-filter-bar" style="flex-direction:column;align-items:flex-start;gap:6px;padding:0 0 14px 0;border-bottom:1px solid #242424;margin-bottom:12px;">`;
+  FILTER_GROUPS.forEach(group => {
+    if (!group.keys) return;
+    const groupKeys = group.keys.filter(t => cardTagSet.has(t));
+    if (!groupKeys.length) return;
+    filterHtml += `<div style="display:flex;align-items:center;flex-wrap:wrap;gap:5px;">`;
+    filterHtml += `<span class="tag-filter-group" style="margin-left:0;min-width:110px;">${group.label}</span>`;
+    groupKeys.forEach(t => {
+      const def = TAG_DEFS[t];
+      if (!def) return;
+      const isActive = activeTagFilters.has(t);
+      filterHtml += `<span class="tag ${def.cls} tag-filter-chip${isActive ? ' active' : ''}" onclick="toggleDetailTagFilter('${t}')">${def.label}</span>`;
+    });
+    filterHtml += `</div>`;
+  });
+  filterHtml += `<div style="display:flex;align-items:center;padding-top:2px;"><span class="tag-filter-clear" id="dt-tag-filter-clear" onclick="clearDetailTagFilters()">✕ Unselect All</span></div>`;
+  filterHtml += `</div>`;
+
+  // Render scenario list
+  let html = filterHtml;
+  card.scenarios.forEach((sc, i) => {
+    const escapedName = sc.name.replace(/'/g,"\\'");
+    const escapedMetaLabel = meta.label.replace(/'/g,"\\'");
+    const escapedDesc = sc.desc.replace(/'/g,"\\'");
+    html += `<div class="scenario-row" id="dt-sc-${i}" data-tags="${getScenarioEffectiveTags(sc).join(',')}">
+      <div class="scenario-icon">${sc.emoji}</div>
+      <div class="scenario-info">
+        <div class="scenario-name">${sc.name}</div>
+        <div class="scenario-desc">${sc.desc}</div>
+        <div class="tags">${makeTags(sc.tags)}</div>
+      </div>
+      <button class="scenario-try" onclick="openFeature('${escapedName}','${sc.emoji}','${escapedMetaLabel}','${escapedDesc}','${card.id}')">Try →</button>
+    </div>`;
+  });
+  document.getElementById('dt-scenarios').innerHTML = html;
+
+  // Right panel summary
+  const total = card.scenarios.length;
+  const avail = getCardAvailTags(card);
+  document.getElementById('dt-right-summary').innerHTML =
+    `<div style="font-size:13px;font-weight:600;color:#bbb;margin-bottom:12px;">${total} scenario${total > 1 ? 's' : ''}</div>` +
+    card.scenarios.map(s => {
+      const eName = s.name.replace(/'/g,"\\'");
+      const eDesc = (s.desc||'').replace(/'/g,"\\'");
+      const eSection = meta.label.replace(/'/g,"\\'");
+      return `<div onclick="openFeature('${eName}','${s.emoji}','${eSection}','${eDesc}','${card.id}')" style="margin-bottom:10px;padding-bottom:10px;border-bottom:1px solid #2a2a2a;cursor:pointer;border-radius:6px;padding:8px;transition:background .15s;" onmouseover="this.style.background='#2a2a2a'" onmouseout="this.style.background=''">
+        <div style="font-size:11px;color:#ccc;font-weight:600;margin-bottom:4px;">${s.emoji} ${s.name}</div>
+        <div class="tags">${makeTags(s.tags)}</div>
+      </div>`;
+    }).join('') +
+    `<div style="margin-top:4px;font-size:10px;color:#444;">Click a scenario to open the generate view.</div>`;
+
+  // Update sidebar active
+  document.querySelectorAll('.nav-child').forEach(el => el.classList.remove('active'));
+
+  // Apply current shared filter state to scenarios
+  applyDetailTagFilter();
+
+  showView('detail');
+}
+
+function openFeature(name, emoji, section, desc, cardId) {
+  if (cardId) currentCardId = cardId;
+  document.getElementById('g-title').textContent = name;
+  document.getElementById('g-icon').textContent = emoji;
+  document.getElementById('g-desc').textContent = desc || '';
+  document.getElementById('bc-section').textContent = section;
+  document.getElementById('bc-name').textContent = name;
+  const card = currentCardId ? CARDS.find(c => c.id === currentCardId) : null;
+  document.getElementById('bc-card-btn').textContent = card ? card.title : '…';
+  switchDraft('a');
+  showView('generate');
+}
+
+function backToDetail() {
+  if (currentCardId) openCard(currentCardId);
+}
+
+function goHome() {
+  showView('catalog');
+}
+
+function showView(which) {
+  document.getElementById('view-catalog').style.display = which === 'catalog' ? 'block' : 'none';
+  const detailEl = document.getElementById('view-detail');
+  detailEl.style.display = which === 'detail' ? 'flex' : 'none';
+  detailEl.classList.toggle('active', which === 'detail');
+  const genEl = document.getElementById('view-generate');
+  genEl.style.display = which === 'generate' ? 'flex' : 'none';
+  genEl.classList.toggle('active', which === 'generate');
+}
+
+function togglePreset() {
+  var b = document.getElementById('preset-body'), c = document.getElementById('preset-caret');
+  var o = b.style.display !== 'none';
+  b.style.display = o ? 'none' : 'block';
+  c.textContent = o ? '▼' : '▲';
+}
+function switchView(e, m) {
+  e.stopPropagation();
+  document.getElementById('pv-form').style.display = m === 'form' ? 'block' : 'none';
+  document.getElementById('pv-json').style.display = m === 'json' ? 'block' : 'none';
+  document.getElementById('t-form').className = m === 'form' ? 'on' : '';
+  document.getElementById('t-json').className = m === 'json' ? 'on' : '';
+}
+function selectChip(el) {
+  document.querySelectorAll('.pchip:not(.add)').forEach(c => c.classList.remove('on'));
+  el.classList.add('on');
+  document.getElementById('preset-label').textContent = '· ' + el.textContent + ' Fashion';
+}
+function switchDraft(d) {
+  ['a','b','c'].forEach(x => {
+    document.getElementById('draft-'+x).style.display = x === d ? 'block' : 'none';
+    document.getElementById('dp-'+x).className = 'draft-pill' + (x === d ? ' on' : '');
+  });
+}
+
+// Initialize
+renderSidebar();
+renderCatalog();
+filterSection('all');
+// URL param: ?openCard=card-id
+(function(){
+  const p=new URLSearchParams(window.location.search);
+  const cid=p.get('openCard');
+  if(cid){const card=CARDS.find(c=>c.id===cid);if(card){filterSection(card.section);setTimeout(()=>openCard(cid),80);}}
+})();
+</script>
+</body>
+</html>

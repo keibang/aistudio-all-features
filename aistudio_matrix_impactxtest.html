@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>AI Studio · Impact × Quality Matrix</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #131313; color: #d8d8d8; font-size: 13px; line-height: 1.6; }
+
+.page { max-width: 1300px; margin: 0 auto; padding: 32px 40px 80px; }
+
+/* Header */
+.doc-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; margin-bottom: 28px; padding-bottom: 24px; border-bottom: 1px solid #2a2a2a; flex-wrap: wrap; }
+.doc-brand { display: flex; align-items: center; gap: 10px; }
+.logo-icon { width: 30px; height: 30px; border-radius: 8px; background: linear-gradient(135deg, #a855f7, #3b82f6); display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+.doc-title { font-size: 18px; font-weight: 700; color: #fff; }
+.doc-subtitle { font-size: 12px; color: #555; margin-top: 1px; }
+.doc-meta { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.stat-chip { background: #1e1e1e; border: 1px solid #2e2e2e; border-radius: 6px; padding: 5px 12px; font-size: 11px; }
+.stat-chip b { color: #e0e0e0; }
+.stat-chip span { color: #555; }
+.link-chip { background: #1a2030; border: 1px solid #2a3a50; border-radius: 6px; padding: 5px 12px; font-size: 11px; color: #6699ff; cursor: pointer; transition: all .15s; }
+.link-chip:hover { background: #243060; color: #99bbff; }
+
+/* Legend */
+.legend-row { display: flex; gap: 20px; flex-wrap: wrap; margin-bottom: 28px; }
+.legend-group { display: flex; flex-direction: column; gap: 5px; }
+.legend-title { font-size: 10px; font-weight: 700; color: #444; text-transform: uppercase; letter-spacing: .08em; margin-bottom: 2px; }
+.legend-items { display: flex; gap: 6px; flex-wrap: wrap; }
+.leg-chip { font-size: 10px; font-weight: 600; padding: 3px 9px; border-radius: 100px; border: 1px solid transparent; }
+
+/* Matrix */
+.matrix-wrap { overflow-x: auto; }
+.matrix { border-collapse: separate; border-spacing: 6px; width: 100%; }
+.matrix th { font-size: 11px; font-weight: 700; padding: 8px 12px; border-radius: 8px; text-align: left; white-space: nowrap; }
+.matrix td { vertical-align: top; background: #1a1a1a; border: 1px solid #252525; border-radius: 10px; padding: 10px 12px; min-width: 200px; }
+.matrix td.empty { background: #141414; border-color: #1e1e1e; }
+.col-header { background: transparent !important; border: none !important; min-width: 140px; }
+.row-header { min-width: 140px !important; width: 140px !important; }
+
+/* Row header cell */
+.rh-inner { display: flex; flex-direction: column; gap: 4px; }
+.rh-badge { font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 100px; display: inline-block; width: fit-content; }
+.rh-label { font-size: 10px; color: #555; }
+
+/* Col header cell */
+.ch-badge { font-size: 11px; font-weight: 700; padding: 4px 10px; border-radius: 100px; display: inline-block; margin-bottom: 2px; }
+.ch-label { font-size: 10px; color: #555; }
+
+/* Scenario item */
+.sc-item { display: flex; align-items: flex-start; gap: 7px; padding: 6px 0; border-bottom: 1px solid #222; }
+.sc-item:last-child { border-bottom: none; padding-bottom: 0; }
+.sc-emoji { font-size: 14px; flex-shrink: 0; margin-top: 1px; }
+.sc-info { flex: 1; min-width: 0; }
+.sc-name { font-size: 11px; font-weight: 600; color: #ddd; line-height: 1.3; }
+.sc-card { font-size: 10px; color: #555; margin-top: 1px; }
+.view-btn { background: #252525; border: 1px solid #333; color: #666; font-size: 9px; font-weight: 700; padding: 2px 7px; border-radius: 5px; cursor: pointer; white-space: nowrap; margin-top: 3px; display: inline-block; transition: all .15s; }
+.view-btn:hover { background: #2dd4bf; color: #000; border-color: #2dd4bf; }
+.cell-count { font-size: 9px; font-weight: 700; color: #444; margin-bottom: 6px; }
+
+/* Highlight on hover */
+.matrix tr:hover td.active-row { background: #1e1e1e; }
+.matrix td.highlighted { background: #1e2a1e; border-color: #2a4a2a; }
+
+.empty-msg { font-size: 10px; color: #2a2a2a; text-align: center; padding: 8px 0; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <div class="doc-header">
+    <div>
+      <div class="doc-brand">
+        <div class="logo-icon">✦</div>
+        <div>
+          <div class="doc-title">AI Studio · Impact × Quality Matrix</div>
+          <div class="doc-subtitle">Intersection of market impact priority and test validation quality</div>
+        </div>
+      </div>
+    </div>
+    <div class="doc-meta">
+      <span id="stats-bar" class="stat-chip"><b style="color:#e0e0e0">–</b> <span>scenarios mapped</span></span>
+      <span class="link-chip" onclick="window.open('aistudio_priority.html','_blank')">↗ Market Impact Roadmap</span>
+      <span class="link-chip" onclick="window.open('aistudio_testmap.html','_blank')">↗ Test Validation Roadmap</span>
+      <span class="link-chip" onclick="window.open('aistudio_catalog.html','_blank')">↗ Catalog</span>
+    </div>
+  </div>
+
+  <div class="legend-row">
+    <div class="legend-group">
+      <div class="legend-title">Market Impact (rows)</div>
+      <div class="legend-items">
+        <span class="leg-chip" style="background:#2a0a0a;color:#fca5a5;border-color:#ef444440;">🔴 Phase 1</span>
+        <span class="leg-chip" style="background:#2a1400;color:#fdba74;border-color:#f9731640;">🟠 Phase 2</span>
+        <span class="leg-chip" style="background:#2a2000;color:#fde047;border-color:#eab30840;">🟡 Phase 3</span>
+        <span class="leg-chip" style="background:#16103a;color:#a5b4fc;border-color:#6366f140;">🔵 Phase 4</span>
+      </div>
+    </div>
+    <div class="legend-group">
+      <div class="legend-title">Test Quality (columns)</div>
+      <div class="legend-items">
+        <span class="leg-chip" style="background:#0a2a14;color:#86efac;border-color:#22c55e40;">✅ Ship Ready</span>
+        <span class="leg-chip" style="background:#2a1e00;color:#fcd34d;border-color:#eab30840;">🔶 Fine-tuning</span>
+        <span class="leg-chip" style="background:#1e1e1e;color:#9ca3af;border-color:#6b728040;">⚪ Not Tested</span>
+        <span class="leg-chip" style="background:#2a0808;color:#fca5a5;border-color:#ef444440;">❌ Poor Results</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="matrix-wrap">
+    <table class="matrix" id="matrix-table"></table>
+  </div>
+
+</div>
+
+<script>
+const IMPACT_TIERS = [
+  { id:'i1', badge:'🔴 Phase 1',    color:'#ef4444', bg:'#2a0a0a', items:[] },
+  { id:'i2', badge:'🟠 Phase 2',  color:'#f97316', bg:'#2a1400', items:[] },
+  { id:'i3', badge:'🟡 Phase 3', color:'#eab308', bg:'#2a2000', items:[] },
+  { id:'i4', badge:'🔵 Phase 4',  color:'#6366f1', bg:'#16103a', items:[] },
+];
+const TEST_TIERS = [
+  { id:'q1', badge:'✅ Ship Ready',   color:'#22c55e', bg:'#0a2a14' },
+  { id:'q2', badge:'🔶 Fine-tuning',  color:'#eab308', bg:'#2a1e00' },
+  { id:'q3', badge:'⚪ Not Tested',   color:'#6b7280', bg:'#1e1e1e' },
+  { id:'q4', badge:'❌ Poor Results', color:'#ef4444', bg:'#2a0808' },
+];
+
+const IMPACT_TIER = {
+  'Change Model & Background':'i1','Garment to Flat Lay':'i1','Generate Views':'i1',
+  'Garment Detail Shots':'i1','Apply Print to Garment':'i1','Catalog Generator':'i1',
+  'Outfit Try-On':'i1','Colorway Generator':'i1','Flat to 3D':'i1',
+  'Design Variations':'i2','Garment Refine':'i2','Apply Pattern to Garment':'i2',
+  'Change Pose':'i2','Virtual Accessories Try-On':'i2','Image to Video':'i2',
+  'Fabric Try-On':'i2','Model Variations':'i2',
+  'Graphic Generator':'i3','Extract Technical Drawing':'i3','Graphic Mixer':'i3',
+  'Smart Cutout & Selection':'i3','Fashion Inspiration Content':'i3','AI Trim Generator':'i3',
+  'Graphic Extractor':'i3','Style Variants':'i3','Realistic to Line Art':'i3',
+  'Image Retouch':'i4','Face Swap':'i4','Garment Pattern Generator':'i4',
+  'VMD & Store Display':'i4','Trend Forecast':'i4','Consumer Insights':'i4',
+  'Category & Market Analysis':'i4','Social Media Insights':'i4',
+  'Color Palette Generator':'i4','Trend to Design':'i4',
+};
+const TEST_TIER = {
+  'Garment to Flat Lay':'q1','Garment Detail Shots':'q1','Colorway Generator':'q1',
+  'Flat to 3D':'q1','Virtual Accessories Try-On':'q1','AI Trim Generator':'q1','Realistic to Line Art':'q1',
+  'Change Model & Background':'q2','Catalog Generator':'q2','Outfit Try-On':'q2',
+  'Change Pose':'q2','Image to Video':'q2','Fabric Try-On':'q2',
+  'Smart Cutout & Selection':'q2','Fashion Inspiration Content':'q2',
+  'Style Variants':'q4','Image Retouch':'q4','Face Swap':'q4',
+};
+
+// Scenarios with impact tier data — if not in TEST_TIER, assign q3
+const ALL_SCENARIOS = [
+  // i1
+  {emoji:'🖼️',name:'Change Model & Background',card:'Model & Scene',cardId:'model-scene'},
+  {emoji:'🗂️',name:'Garment to Flat Lay',card:'Product Photography',cardId:'product-photography'},
+  {emoji:'📸',name:'Generate Views',card:'Model & Scene',cardId:'model-scene'},
+  {emoji:'🔍',name:'Garment Detail Shots',card:'Product Photography',cardId:'product-photography'},
+  {emoji:'🔁',name:'Apply Print to Garment',card:'Apply to Garment',cardId:'apply-to-garment'},
+  {emoji:'📄',name:'Catalog Generator',card:'Content Generator',cardId:'content-generator'},
+  {emoji:'👗',name:'Outfit Try-On',card:'Virtual Try-On',cardId:'virtual-try-on'},
+  {emoji:'🌈',name:'Colorway Generator',card:'Colorway Generator',cardId:'colorway-generator'},
+  {emoji:'📦',name:'Flat to 3D',card:'3D Visualization',cardId:'3d-visualization'},
+  // i2
+  {emoji:'🔀',name:'Design Variations',card:'AI Design Generator',cardId:'ai-design-generator'},
+  {emoji:'✍️',name:'Garment Refine',card:'AI Design Generator',cardId:'ai-design-generator'},
+  {emoji:'🔂',name:'Apply Pattern to Garment',card:'Apply to Garment',cardId:'apply-to-garment'},
+  {emoji:'🤸',name:'Change Pose',card:'Model & Scene',cardId:'model-scene'},
+  {emoji:'👡',name:'Virtual Accessories Try-On',card:'Virtual Try-On',cardId:'virtual-try-on'},
+  {emoji:'🎬',name:'Image to Video',card:'Image to Video',cardId:'image-to-video'},
+  {emoji:'🪡',name:'Fabric Try-On',card:'Fabric & Texture',cardId:'fabric-texture'},
+  {emoji:'🧑‍🤝‍🧑',name:'Model Variations',card:'Model & Scene',cardId:'model-scene'},
+  // i3
+  {emoji:'🪡',name:'Graphic Generator',card:'Graphic & Pattern',cardId:'graphic-pattern'},
+  {emoji:'📐',name:'Extract Technical Drawing',card:'Line Art & Technical',cardId:'line-art-technical'},
+  {emoji:'🎛️',name:'Graphic Mixer',card:'Graphic Tools',cardId:'graphic-tools'},
+  {emoji:'✂️',name:'Smart Cutout & Selection',card:'Image Editing',cardId:'image-editing'},
+  {emoji:'📱',name:'Fashion Inspiration Content',card:'Content Generator',cardId:'content-generator'},
+  {emoji:'🪢',name:'AI Trim Generator',card:'AI Trim Generator',cardId:'ai-trim-generator'},
+  {emoji:'🔎',name:'Graphic Extractor',card:'Graphic Tools',cardId:'graphic-tools'},
+  {emoji:'🔄',name:'Style Variants',card:'Style Variants',cardId:'style-variants'},
+  {emoji:'✏️',name:'Realistic to Line Art',card:'Line Art & Technical',cardId:'line-art-technical'},
+  // i4
+  {emoji:'🖌️',name:'Image Retouch',card:'Image Editing',cardId:'image-editing'},
+  {emoji:'🧑',name:'Face Swap',card:'Image Editing',cardId:'image-editing'},
+  {emoji:'📋',name:'Garment Pattern Generator',card:'Graphic & Pattern',cardId:'graphic-pattern'},
+  {emoji:'🏬',name:'VMD & Store Display',card:'VMD & Store Display',cardId:'vmd-store'},
+  {emoji:'🌐',name:'Trend Forecast',card:'Market Intelligence',cardId:'market-intelligence'},
+  {emoji:'👥',name:'Consumer Insights',card:'Market Intelligence',cardId:'market-intelligence'},
+  {emoji:'📊',name:'Category & Market Analysis',card:'Market Intelligence',cardId:'market-intelligence'},
+  {emoji:'📣',name:'Social Media Insights',card:'Market Intelligence',cardId:'market-intelligence'},
+  {emoji:'🎨',name:'Color Palette Generator',card:'Creative Trend',cardId:'creative-trend'},
+  {emoji:'💡',name:'Trend to Design',card:'Creative Trend',cardId:'creative-trend'},
+];
+
+// Build matrix data[impactId][testId] = [scenarios]
+const matrix = {};
+IMPACT_TIERS.forEach(it => {
+  matrix[it.id] = {};
+  TEST_TIERS.forEach(qt => { matrix[it.id][qt.id] = []; });
+});
+ALL_SCENARIOS.forEach(sc => {
+  const it = IMPACT_TIER[sc.name];
+  const qt = TEST_TIER[sc.name] || 'q3';
+  if (it && matrix[it]) matrix[it][qt].push(sc);
+});
+
+function openCard(cardId) {
+  window.open('aistudio_catalog.html?openCard=' + cardId, '_blank');
+}
+
+function renderMatrix() {
+  const table = document.getElementById('matrix-table');
+  let total = 0;
+  ALL_SCENARIOS.forEach(sc => { if (IMPACT_TIER[sc.name]) total++; });
+  document.getElementById('stats-bar').innerHTML =
+    `<b style="color:#e0e0e0">${total}</b> <span>scenarios mapped</span>`;
+
+  // Header row
+  let html = `<thead><tr>
+    <th class="col-header"></th>`;
+  TEST_TIERS.forEach(qt => {
+    html += `<th style="background:${qt.bg}22;color:${qt.color};border:1px solid ${qt.color}22;border-radius:8px;">
+      <div class="ch-badge" style="background:${qt.bg};color:${qt.color};border:1px solid ${qt.color}40;">${qt.badge}</div>
+    </th>`;
+  });
+  html += `</tr></thead><tbody>`;
+
+  IMPACT_TIERS.forEach(it => {
+    html += `<tr>
+      <td class="row-header" style="background:${it.bg}22;border:1px solid ${it.color}22;border-radius:10px;vertical-align:middle;">
+        <div class="rh-inner">
+          <span class="rh-badge" style="background:${it.bg};color:${it.color};border:1px solid ${it.color}40;">${it.badge}</span>
+        </div>
+      </td>`;
+    TEST_TIERS.forEach(qt => {
+      const items = matrix[it.id][qt.id];
+      if (items.length === 0) {
+        html += `<td class="empty"><div class="empty-msg">—</div></td>`;
+      } else {
+        // Determine cell accent color (prioritize impact tier color)
+        const borderCol = qt.color + '30';
+        html += `<td style="border-color:${borderCol};">
+          <div class="cell-count">${items.length} scenario${items.length > 1 ? 's' : ''}</div>`;
+        items.forEach(sc => {
+          html += `<div class="sc-item">
+            <div class="sc-emoji">${sc.emoji}</div>
+            <div class="sc-info">
+              <div class="sc-name">${sc.name}</div>
+              <div class="sc-card">↳ ${sc.card}</div>
+              <span class="view-btn" onclick="openCard('${sc.cardId}')">View →</span>
+            </div>
+          </div>`;
+        });
+        html += `</td>`;
+      }
+    });
+    html += `</tr>`;
+  });
+
+  html += `</tbody>`;
+  table.innerHTML = html;
+}
+
+renderMatrix();
+</script>
+</body>
+</html>

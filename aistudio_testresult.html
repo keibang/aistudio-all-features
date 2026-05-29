@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>AI Studio · Test Validation Roadmap</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #131313; color: #d8d8d8; font-size: 13px; line-height: 1.6; }
+a { color: inherit; text-decoration: none; }
+
+.page { max-width: 1100px; margin: 0 auto; padding: 32px 40px 80px; }
+
+/* Header */
+.doc-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; margin-bottom: 28px; padding-bottom: 24px; border-bottom: 1px solid #2a2a2a; flex-wrap: wrap; }
+.doc-brand { display: flex; align-items: center; gap: 10px; }
+.logo-icon { width: 30px; height: 30px; border-radius: 8px; background: linear-gradient(135deg, #a855f7, #3b82f6); display: flex; align-items: center; justify-content: center; font-size: 14px; flex-shrink: 0; }
+.doc-title { font-size: 18px; font-weight: 700; color: #fff; }
+.doc-subtitle { font-size: 12px; color: #555; margin-top: 1px; }
+.doc-meta { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; }
+.stat-chip { background: #1e1e1e; border: 1px solid #2e2e2e; border-radius: 6px; padding: 5px 12px; font-size: 11px; }
+.stat-chip b { color: #e0e0e0; }
+.stat-chip span { color: #555; }
+.link-chip { background: #1a2030; border: 1px solid #2a3a50; border-radius: 6px; padding: 5px 12px; font-size: 11px; color: #6699ff; cursor: pointer; transition: all .15s; }
+.link-chip:hover { background: #243060; color: #99bbff; }
+
+/* Framework */
+.framework { background: #0e1e14; border: 1px solid #1a3020; border-radius: 10px; padding: 16px 20px; margin-bottom: 28px; }
+.framework-title { font-size: 11px; font-weight: 700; color: #555; text-transform: uppercase; letter-spacing: .09em; margin-bottom: 10px; }
+.framework-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 10px; }
+.fw-item { background: #0a180e; border-radius: 7px; padding: 10px 13px; border: 1px solid #1a2e1a; }
+.fw-item-label { font-size: 10px; font-weight: 700; text-transform: uppercase; letter-spacing: .07em; margin-bottom: 3px; }
+.fw-item-desc { font-size: 11px; color: #666; }
+
+/* Score bar legend */
+.score-legend { display: flex; align-items: center; gap: 6px; margin-bottom: 24px; padding: 10px 14px; background: #1a1a1a; border: 1px solid #222; border-radius: 8px; flex-wrap: wrap; }
+.score-label { font-size: 10px; font-weight: 700; color: #444; text-transform: uppercase; letter-spacing: .06em; margin-right: 4px; }
+.score-dot { display: inline-flex; align-items: center; gap: 5px; font-size: 10px; color: #555; margin: 0 4px; }
+.sd { width: 8px; height: 8px; border-radius: 2px; display: inline-block; }
+.legend-sep { color: #2a2a2a; margin: 0 6px; font-size: 14px; }
+
+/* Tier section */
+.tier-section { margin-bottom: 40px; }
+.tier-header { display: flex; align-items: center; gap: 10px; margin-bottom: 5px; }
+.tier-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.tier-label { font-size: 14px; font-weight: 700; }
+.tier-count { font-size: 11px; font-weight: 700; background: #252525; color: #666; padding: 2px 8px; border-radius: 10px; border: 1px solid #333; }
+.tier-badge { font-size: 10px; font-weight: 700; padding: 3px 9px; border-radius: 100px; margin-left: 4px; }
+.tier-desc { font-size: 12px; color: #555; margin-bottom: 12px; margin-left: 20px; }
+
+/* Table */
+.scenario-table { width: 100%; border-collapse: collapse; }
+.scenario-table thead th { font-size: 10px; font-weight: 700; color: #444; text-transform: uppercase; letter-spacing: .07em; padding: 8px 12px; text-align: left; border-bottom: 1px solid #222; }
+.scenario-table tbody tr { border-bottom: 1px solid #1e1e1e; transition: background .12s; }
+.scenario-table tbody tr:hover { background: #1c1c1c; }
+.scenario-table td { padding: 11px 12px; vertical-align: top; }
+.rank { font-size: 11px; font-weight: 700; color: #444; min-width: 28px; }
+
+/* Score indicator */
+.score-cell { min-width: 72px; }
+.score-bar { display: flex; gap: 3px; align-items: center; margin-bottom: 3px; }
+.score-pip { width: 10px; height: 10px; border-radius: 2px; }
+.score-note { font-size: 9px; color: #555; }
+
+.sc-name { display: flex; align-items: flex-start; gap: 8px; min-width: 190px; }
+.sc-emoji { font-size: 18px; flex-shrink: 0; margin-top: 1px; }
+.sc-name-text { font-size: 12px; font-weight: 600; color: #e0e0e0; margin-bottom: 2px; }
+.sc-card { font-size: 10px; color: #555; }
+.sc-rationale { font-size: 11px; color: #777; line-height: 1.6; max-width: 300px; }
+.tags { display: flex; flex-wrap: wrap; gap: 3px; }
+.tag { font-size: 9px; font-weight: 600; padding: 2px 6px; border-radius: 100px; display: inline-flex; align-items: center; white-space: nowrap; }
+.tag-existing   { background:#1c2e1c; color:#5ecf80; }
+.tag-sw         { background:#0e2030; color:#4db8f0; }
+.tag-style3d    { background:#2a1e0e; color:#f0a855; }
+.tag-developing { background:#2a1e08; color:#f0a030; }
+.tag-soho       { background:#2a1a2e; color:#d08af5; }
+.tag-nano-yes   { background:#003030; color:#00e5c8; border:1px solid #005a50; }
+.tag-nano-yb    { background:#181a00; color:#d9f99d; border:1px solid #303800; }
+.tag-nano-no    { background:#1a0618; color:#e879f9; border:1px solid #3a0a38; }
+.tag-huiwacn-good  { background:#0d2a14; color:#4ade80; border:1px solid #14532d; }
+.tag-huiwacn-soso  { background:#2a2200; color:#fbbf24; border:1px solid #4a3a00; }
+.tag-huiwacn-bad   { background:#2a0a0a; color:#f87171; border:1px solid #5a1a1a; }
+.tag-huiwakr-good  { background:#082218; color:#6ee7b7; border:1px solid #103c28; }
+.tag-huiwakr-soso  { background:#1c1600; color:#fde68a; border:1px solid #342c00; }
+.tag-huiwakr-bad   { background:#1e0810; color:#fca5a5; border:1px solid #3c1020; }
+.tag-lingyang   { background:#001828; color:#38bdf8; border:1px solid #0369a1; }
+
+.view-btn { display: inline-flex; align-items: center; gap: 4px; font-size: 10px; font-weight: 700; color: #2dd4bf; background: #0a2020; border: 1px solid #1a4a44; padding: 4px 10px; border-radius: 6px; cursor: pointer; white-space: nowrap; transition: all .15s; }
+.view-btn:hover { background: #2dd4bf; color: #000; border-color: #2dd4bf; }
+
+/* Sub-header for groups within Tier 3 */
+.sub-header-row td { padding: 12px 12px 6px; font-size: 10px; font-weight: 700; color: #444; text-transform: uppercase; letter-spacing: .08em; background: #161616; border-bottom: 1px solid #2a2a2a; border-top: 2px solid #202020; }
+
+/* Tier colors */
+.t1 .tier-dot { background: #22c55e; }
+.t1 .tier-label { color: #86efac; }
+.t2 .tier-dot { background: #eab308; }
+.t2 .tier-label { color: #fde047; }
+.t3 .tier-dot { background: #6b7280; }
+.t3 .tier-label { color: #9ca3af; }
+.t4 .tier-dot { background: #ef4444; }
+.t4 .tier-label { color: #fca5a5; }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <!-- Header -->
+  <div class="doc-header">
+    <div class="doc-brand">
+      <div class="logo-icon">✦</div>
+      <div>
+        <div class="doc-title">AI Studio · Test Validation Roadmap</div>
+        <div class="doc-subtitle">Ship-readiness ranking by test results · CLO3D AI Studio</div>
+      </div>
+    </div>
+    <div class="doc-meta" id="stats-bar">
+      <span class="link-chip" onclick="window.open('aistudio_priority.html','_blank')">↗ Market Impact Roadmap</span>
+    </div>
+  </div>
+
+  <!-- Framework -->
+  <div class="framework">
+    <div class="framework-title">Tier Criteria — Test Result Quality</div>
+    <div class="framework-grid">
+      <div class="fw-item" style="border-color:#1a4a2a">
+        <div class="fw-item-label" style="color:#4ade80">✅ Tier 1 · Ship Ready</div>
+        <div class="fw-item-desc">At least one positive result from Nano-Yes · HuiwaCN-good · HuiwaKR-good. Quality validated — ready to ship the moment development completes.</div>
+      </div>
+      <div class="fw-item" style="border-color:#3a2a00">
+        <div class="fw-item-label" style="color:#fde047">🔶 Tier 2 · Quality Refinement</div>
+        <div class="fw-item-desc">Only Nano-Yes,but · soso results available. Technical direction is validated, but quality fine-tuning or prompt optimization is still needed.</div>
+      </div>
+      <div class="fw-item" style="border-color:#2a2a2a">
+        <div class="fw-item-label" style="color:#9ca3af">⚪ Tier 3 · Not Yet Tested</div>
+        <div class="fw-item-desc">Only Style3D · SOHO references available. No internal tests run yet — can be reclassified to Tier 1 or 2 after validation.</div>
+      </div>
+      <div class="fw-item" style="border-color:#3a1a1a">
+        <div class="fw-item-label" style="color:#fca5a5">❌ Tier 4 · Needs Rework</div>
+        <div class="fw-item-desc">Contains Nano-No · bad results. Current technology falls below production quality — model replacement or approach redesign required first.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Tag Legend -->
+  <div class="score-legend">
+    <span class="score-label">Test Results</span>
+    <span class="score-dot"><span class="sd" style="background:#00e5c8;border:1px solid #005a50"></span>😊 Nano-Yes</span>
+    <span class="score-dot"><span class="sd" style="background:#d9f99d;border:1px solid #303800"></span>😐 Nano-Yes,but</span>
+    <span class="score-dot"><span class="sd" style="background:#e879f9;border:1px solid #3a0a38"></span>😢 Nano-No</span>
+    <span class="legend-sep">|</span>
+    <span class="score-dot"><span class="sd" style="background:#4ade80"></span>😊 HuiwaCN-good</span>
+    <span class="score-dot"><span class="sd" style="background:#fbbf24"></span>😐 HuiwaCN-soso</span>
+    <span class="score-dot"><span class="sd" style="background:#f87171"></span>😢 HuiwaCN-bad</span>
+    <span class="legend-sep">|</span>
+    <span class="score-dot"><span class="sd" style="background:#6ee7b7;border:1px solid #103c28"></span>😊 HuiwaKR-good</span>
+    <span class="score-dot"><span class="sd" style="background:#fde68a;border:1px solid #342c00"></span>😐 HuiwaKR-soso</span>
+    <span class="legend-sep">|</span>
+    <span class="score-dot"><span class="sd" style="background:#f0a855"></span>Style3D</span>
+    <span class="score-dot"><span class="sd" style="background:#d08af5"></span>SOHO</span>
+    <span class="score-dot"><span class="sd" style="background:#f0a030"></span>Developing</span>
+    <span class="score-dot"><span class="sd" style="background:#38bdf8;border:1px solid #0369a1"></span>Lingyang</span>
+  </div>
+
+  <div id="roadmap-content"></div>
+</div>
+
+<script>
+const TD={
+  existing:{cls:'tag-existing',label:'Existing in Web'},sw:{cls:'tag-sw',label:'Existing in SW'},
+  style3d:{cls:'tag-style3d',label:'Style3D'},developing:{cls:'tag-developing',label:'Developing'},
+  soho:{cls:'tag-soho',label:'SOHO'},
+  'nano-yes':{cls:'tag-nano-yes',label:'😊 Nano-Yes'},'nano-yb':{cls:'tag-nano-yb',label:'😐 Nano-Yes,but'},'nano-no':{cls:'tag-nano-no',label:'😢 Nano-No'},
+  'huiwacn-good':{cls:'tag-huiwacn-good',label:'😊 HuiwaCN-good'},'huiwacn-soso':{cls:'tag-huiwacn-soso',label:'😐 HuiwaCN-soso'},'huiwacn-bad':{cls:'tag-huiwacn-bad',label:'😢 HuiwaCN-bad'},
+  'huiwakr-good':{cls:'tag-huiwakr-good',label:'😊 HuiwaKR-good'},'huiwakr-soso':{cls:'tag-huiwakr-soso',label:'😐 HuiwaKR-soso'},'huiwakr-bad':{cls:'tag-huiwakr-bad',label:'😢 HuiwaKR-bad'},
+  lingyang:{cls:'tag-lingyang',label:'Lingyang'}
+};
+function mt(arr){return arr.map(t=>{const d=TD[t];return d?`<span class="tag ${d.cls}">${d.label}</span>`:''}).join('');}
+
+// Score pips: good=green, soso/yb=yellow, bad/no=red, none=dark
+function scorePips(tags){
+  const GOOD=['nano-yes','huiwacn-good','huiwakr-good'];
+  const SOSO=['nano-yb','huiwacn-soso','huiwakr-soso'];
+  const BAD=['nano-no','huiwacn-bad','huiwakr-bad'];
+  const g=tags.filter(t=>GOOD.includes(t)).length;
+  const s=tags.filter(t=>SOSO.includes(t)).length;
+  const b=tags.filter(t=>BAD.includes(t)).length;
+  const total=g+s+b;
+  if(total===0) return '<div class="score-note" style="color:#333">No data</div>';
+  let pips='';
+  for(let i=0;i<g;i++) pips+=`<div class="score-pip" style="background:#22c55e"></div>`;
+  for(let i=0;i<s;i++) pips+=`<div class="score-pip" style="background:#eab308"></div>`;
+  for(let i=0;i<b;i++) pips+=`<div class="score-pip" style="background:#ef4444"></div>`;
+  const label = b>0? '<span style="color:#f87171">Rework</span>' : s>0&&g>0? '<span style="color:#a3e635">Improving</span>' : s>0? '<span style="color:#fde047">Needs work</span>' : '<span style="color:#4ade80">Validated</span>';
+  return `<div class="score-bar">${pips}</div><div class="score-note">${label}</div>`;
+}
+
+const TIERS = [
+  {
+    id:'t1', dot:'#22c55e', label:'Tier 1 · Validated',
+    badge:'✅ Ship Ready',
+    badgeColor:'#22c55e',
+    desc:'At least one positive test result (Nano-Yes / HuiwaCN-good / HuiwaKR-good) confirmed. Technical viability proven and quality bar cleared. Ordered by market impact within the tier.',
+    items:[
+      {rank:1, emoji:'🗂️', name:'Garment to Flat Lay', card:'Product Photography', cardId:'product-photography',
+       rationale:'Double-validated with Nano-Yes + HuiwaCN-good. Strongest test portfolio — production quality achievable immediately.',
+       tags:['style3d','nano-yes','huiwacn-good','huiwacn-soso','huiwakr-soso']},
+      {rank:2, emoji:'🔍', name:'Garment Detail Shots', card:'Product Photography', cardId:'product-photography',
+       rationale:'HuiwaCN-good confirmed. AI-generated fabric and stitch close-up quality meets production standards. KR soso can be improved with local fine-tuning.',
+       tags:['style3d','soho','huiwacn-good','huiwakr-soso']},
+      {rank:3, emoji:'🌈', name:'Colorway Generator', card:'Colorway Generator', cardId:'colorway-generator',
+       rationale:'Nano-Yes validated. Color substitution quality is stable. KR soso needs work on specific material reflections, but core functionality is ready to ship.',
+       tags:['style3d','soho','nano-yes','huiwakr-soso']},
+      {rank:4, emoji:'📦', name:'Flat to 3D', card:'3D Visualization', cardId:'3d-visualization',
+       rationale:'HuiwaCN-good confirmed. Combines CLO\'s 3D strength with AI — proven quality that can serve as a key differentiator.',
+       tags:['style3d','huiwacn-good']},
+      {rank:5, emoji:'👡', name:'Virtual Accessories Try-On', card:'Virtual Try-On', cardId:'virtual-try-on',
+       rationale:'HuiwaCN-good confirmed. Accessory compositing quality is excellent. Full-look styling content production is immediately viable.',
+       tags:['style3d','huiwacn-good']},
+      {rank:6, emoji:'🪢', name:'AI Trim Generator', card:'AI Trim Generator', cardId:'ai-trim-generator',
+       rationale:'Nano-Yes validated and development is already in progress. Can be completed quickly for trim-specialist brand targets.',
+       tags:['developing','style3d','soho','nano-yes']},
+      {rank:7, emoji:'✏️', name:'Realistic to Line Art', card:'Line Art & Technical', cardId:'line-art-technical',
+       rationale:'Nano-Yes validated. Realistic garment to line art conversion quality passes the bar. Ready to integrate into tech pack automation workflows.',
+       tags:['nano-yes']},
+    ]
+  },
+  {
+    id:'t2', dot:'#eab308', label:'Tier 2 · Quality Refinement',
+    badge:'🔶 Needs Fine-tuning',
+    badgeColor:'#eab308',
+    desc:'soso / Yes,but results confirm the technical direction, but production quality is not yet met. Prompt optimization and model fine-tuning can move these to Tier 1. Ordered by market impact within the tier.',
+    items:[
+      {rank:8, emoji:'🖼️', name:'Change Model & Background', card:'Model & Scene', cardId:'model-scene',
+       rationale:'Nano-YB + HuiwaCN-soso. Direction is proven but model compositing naturalness needs improvement. Highest market impact — most worthy of focused investment.',
+       tags:['style3d','soho','nano-yb','huiwacn-soso']},
+      {rank:9, emoji:'📄', name:'Catalog Generator', card:'Content Generator', cardId:'content-generator',
+       rationale:'HuiwaCN-soso. Batch production pipeline feasibility confirmed. Consistency improvements and template quality upgrades will bring it to launch-ready.',
+       tags:['soho','huiwacn-soso']},
+      {rank:10, emoji:'👗', name:'Outfit Try-On', card:'Virtual Try-On', cardId:'virtual-try-on',
+       rationale:'HuiwaCN-soso. Layering compositing technique validated — improving garment edge blending is the key to reaching Tier 1.',
+       tags:['style3d','huiwacn-soso']},
+      {rank:11, emoji:'🤸', name:'Change Pose', card:'Model & Scene', cardId:'model-scene',
+       rationale:'Nano-YB. Pose changes work but garment deformation realism (creasing, fit) needs improvement.',
+       tags:['style3d','soho','nano-yb']},
+      {rank:12, emoji:'🎬', name:'Image to Video', card:'Image to Video', cardId:'image-to-video',
+       rationale:'HuiwaKR-soso. Basic motion generation confirmed, but fashion walking and drape movement quality needs fashion-specific enhancement.',
+       tags:['soho','huiwakr-soso']},
+      {rank:13, emoji:'🪡', name:'Fabric Try-On', card:'Fabric & Texture', cardId:'fabric-texture',
+       rationale:'Nano-YB. Material swap direction is correct, but texture tiling and sheen rendering precision needs improvement.',
+       tags:['style3d','nano-yb']},
+      {rank:14, emoji:'✂️', name:'Smart Cutout & Selection', card:'Image Editing', cardId:'image-editing',
+       rationale:'HuiwaKR-soso. Basic masking works but complex hairline and semi-transparent fabric edge handling needs improvement.',
+       tags:['huiwakr-soso']},
+      {rank:15, emoji:'📱', name:'Fashion Inspiration Content', card:'Content Generator', cardId:'content-generator',
+       rationale:'HuiwaCN-soso. Content generation is technically feasible — fashion style consistency and brand tone retention need improvement.',
+       tags:['soho','huiwacn-soso']},
+    ]
+  },
+  {
+    id:'t3', dot:'#6b7280', label:'Tier 3 · Not Yet Tested',
+    badge:'⚪ Testing Required',
+    badgeColor:'#6b7280',
+    desc:'No internal tests run — viability inferred only from competitor offerings (Style3D · SOHO). After testing, will be reclassified into Tier 1 or 2. Ordered by market impact. Lingyang-based features require a separate data partnership first.',
+    subgroups: true,
+    items:[
+      // ── Style3D/SOHO reference group ──
+      {subhead:'Style3D · SOHO Reference Only (No internal tests)', subheadSpan:6},
+      {rank:16, emoji:'📸', name:'Generate Views', card:'Model & Scene', cardId:'model-scene',
+       rationale:'Both Style3D and SOHO offer this. Technical viability is high — expected to be reclassified to Tier 1 or 2 after Nano/Huiwa testing.',
+       tags:['style3d','soho']},
+      {rank:17, emoji:'🔁', name:'Apply Print to Garment', card:'Apply to Garment', cardId:'apply-to-garment',
+       rationale:'Style3D + SOHO references exist. Print simulation demand is clear — testing should be prioritized.',
+       tags:['style3d','soho']},
+      {rank:18, emoji:'🔀', name:'Design Variations', card:'AI Design Generator', cardId:'ai-design-generator',
+       rationale:'Style3D reference. Core ideation-stage feature — testable immediately once an image-mixing model is selected.',
+       tags:['style3d','soho']},
+      {rank:19, emoji:'✍️', name:'Garment Refine', card:'AI Design Generator', cardId:'ai-design-generator',
+       rationale:'Style3D reference. Inpainting technology is mature — testing with fashion-specific masking guidelines is needed.',
+       tags:['style3d','soho']},
+      {rank:20, emoji:'🔂', name:'Apply Pattern to Garment', card:'Apply to Garment', cardId:'apply-to-garment',
+       rationale:'Style3D + SOHO reference. Pattern tiling accuracy is the key test point.',
+       tags:['style3d','soho']},
+      {rank:21, emoji:'🧑‍🤝‍🧑', name:'Model Variations', card:'Model & Scene', cardId:'model-scene',
+       rationale:'Style3D reference. Diversity demand is clear — set quality standards for body type and ethnicity balance, then test.',
+       tags:['style3d','soho']},
+      {rank:22, emoji:'🪡', name:'Graphic Generator', card:'Graphic & Pattern', cardId:'graphic-pattern',
+       rationale:'Existing SW feature + Style3D reference. Easy to establish a quality baseline when testing the web version.',
+       tags:['sw','style3d']},
+      {rank:23, emoji:'📐', name:'Extract Technical Drawing', card:'Line Art & Technical', cardId:'line-art-technical',
+       rationale:'Style3D reference. Demand for tech pack automation is clear — line precision and auto-labeling quality need testing.',
+       tags:['style3d','soho']},
+      {rank:24, emoji:'🎛️', name:'Graphic Mixer', card:'Graphic Tools', cardId:'graphic-tools',
+       rationale:'Style3D reference. Pattern blending outcomes are hard to predict — internal testing is essential to verify quality.',
+       tags:['style3d','soho']},
+      {rank:25, emoji:'🔎', name:'Graphic Extractor', card:'Graphic Tools', cardId:'graphic-tools',
+       rationale:'Style3D reference. Pattern extraction accuracy — quality of separating complex prints is the key test point.',
+       tags:['style3d','soho']},
+      {rank:26, emoji:'📋', name:'Garment Pattern Generator', card:'Graphic & Pattern', cardId:'graphic-pattern',
+       rationale:'No test data at all. Sewing pattern generation is a highly specialized domain — expert evaluation with pattern makers is recommended first.',
+       tags:[]},
+      {rank:27, emoji:'🏬', name:'VMD & Store Display', card:'VMD & Store Display', cardId:'vmd-store',
+       rationale:'SOHO reference. Targets offline retail — needs a separate roadmap after the e-commerce-first strategy is complete.',
+       tags:['soho']},
+      // ── Lingyang group ──
+      {subhead:'Lingyang Partnership Required (Data pipeline must come first)', subheadSpan:6},
+      {rank:28, emoji:'🌐', name:'Trend Forecast', card:'Market Intelligence', cardId:'market-intelligence',
+       rationale:'Lingyang-dependent. Real-time runway and street trend analysis — testable only after partnership agreement and API integration are complete.',
+       tags:['soho','lingyang']},
+      {rank:29, emoji:'👥', name:'Consumer Insights', card:'Market Intelligence', cardId:'market-intelligence',
+       rationale:'Lingyang-based consumer profiling — test design possible only after partnership scope is finalized.',
+       tags:['soho','lingyang']},
+      {rank:30, emoji:'📊', name:'Category & Market Analysis', card:'Market Intelligence', cardId:'market-intelligence',
+       rationale:'Heavily Lingyang-dependent. Price band and market opportunity mapping — verify data quality first.',
+       tags:['soho','lingyang']},
+      {rank:31, emoji:'📣', name:'Social Media Insights', card:'Market Intelligence', cardId:'market-intelligence',
+       rationale:'SNS API + Lingyang integration — requires separate data partnership and API agreements.',
+       tags:['soho','lingyang']},
+      {rank:32, emoji:'🎨', name:'Color Palette Generator', card:'Creative Trend', cardId:'creative-trend',
+       rationale:'Combines Lingyang trend data with generative AI — can only be developed after Market Intelligence is complete.',
+       tags:['lingyang']},
+      {rank:33, emoji:'💡', name:'Trend to Design', card:'Creative Trend', cardId:'creative-trend',
+       rationale:'Only meaningful after the Lingyang pipeline is complete — the final step in the entire Lingyang feature chain.',
+       tags:['soho','lingyang']},
+    ]
+  },
+  {
+    id:'t4', dot:'#ef4444', label:'Tier 4 · Needs Rework',
+    badge:'❌ Poor Results',
+    badgeColor:'#ef4444',
+    desc:'Contains bad or Nano-No results — current model and approach fall short of production quality. Model replacement, fine-tuning strategy redesign, or ethics/policy review required first.',
+    items:[
+      {rank:34, emoji:'🔄', name:'Style Variants', card:'Style Variants', cardId:'style-variants',
+       rationale:'HuiwaCN-soso + HuiwaCN-bad mixed results. Inconsistent outputs — style control technique needs a redesign. Stabilizing batch generation quality is the prerequisite.',
+       tags:['huiwacn-soso','huiwacn-bad']},
+      {rank:35, emoji:'🖌️', name:'Image Retouch', card:'Image Editing', cardId:'image-editing',
+       rationale:'Clear Nano-No failure. A general retouching approach cannot achieve fashion-grade quality — vertical fine-tuning or a model replacement is needed.',
+       tags:['nano-no','huiwakr-soso']},
+      {rank:36, emoji:'🧑', name:'Face Swap', card:'Image Editing', cardId:'image-editing',
+       rationale:'Nano-YB + Nano-No mixed results. Beyond technical instability, internal portrait rights and AI ethics policies must be established first.',
+       tags:['nano-yb','nano-no']},
+    ]
+  }
+];
+
+function openCard(cardId){
+  window.open('aistudio_catalog.html?openCard='+cardId,'_blank');
+}
+
+function renderStats(){
+  const total=TIERS.reduce((s,t)=>s+t.items.filter(i=>!i.subhead).length,0);
+  const statsEl=document.getElementById('stats-bar');
+  const chips=TIERS.map((t,i)=>`<span class="stat-chip"><b style="color:${t.dot}">${t.items.filter(x=>!x.subhead).length}</b> <span>Tier ${i+1}</span></span>`).join('');
+  statsEl.innerHTML=`<span class="stat-chip"><b style="color:#e0e0e0">${total}</b> <span>Total scenarios</span></span>`+chips+`<span class="link-chip" onclick="window.open('aistudio_priority.html','_blank')">↗ Market Impact Roadmap</span>`;
+}
+
+function renderRoadmap(){
+  let html='';
+  TIERS.forEach(tier=>{
+    const itemCount=tier.items.filter(i=>!i.subhead).length;
+    html+=`<div class="tier-section ${tier.id}">
+      <div class="tier-header">
+        <div class="tier-dot" style="background:${tier.dot}"></div>
+        <div class="tier-label">${tier.label}</div>
+        <div class="tier-count">${itemCount} scenarios</div>
+        <span class="tier-badge" style="background:${tier.dot}22;color:${tier.dot};border:1px solid ${tier.dot}44">${tier.badge}</span>
+      </div>
+      <div class="tier-desc">${tier.desc}</div>
+      <table class="scenario-table">
+        <thead><tr>
+          <th>#</th><th>Scenario</th><th>Test Result Interpretation & Action</th><th>Score</th><th>Tags</th><th></th>
+        </tr></thead>
+        <tbody>`;
+
+    tier.items.forEach(item=>{
+      if(item.subhead){
+        html+=`<tr><td class="sub-header-row" colspan="${item.subheadSpan||6}">── ${item.subhead}</td></tr>`;
+        return;
+      }
+      html+=`<tr>
+        <td class="rank">${item.rank}</td>
+        <td class="sc-name">
+          <div class="sc-emoji">${item.emoji}</div>
+          <div>
+            <div class="sc-name-text">${item.name}</div>
+            <div class="sc-card">↳ ${item.card}</div>
+          </div>
+        </td>
+        <td class="sc-rationale">${item.rationale}</td>
+        <td class="score-cell">${scorePips(item.tags)}</td>
+        <td><div class="tags">${mt(item.tags)}</div></td>
+        <td><button class="view-btn" onclick="openCard('${item.cardId}')">View →</button></td>
+      </tr>`;
+    });
+    html+=`</tbody></table></div>`;
+  });
+  document.getElementById('roadmap-content').innerHTML=html;
+}
+
+renderStats();
+renderRoadmap();
+</script>
+</body>
+</html>
